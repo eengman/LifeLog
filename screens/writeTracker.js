@@ -1,13 +1,9 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { 
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
+  View, Text,TouchableOpacity, TextInput, Button,
 } from 'react-native';
 import NfcManager, {Ndef, NfcTech} from '../NfcManager';
-import AppV2 from './readTracker';
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -16,7 +12,7 @@ function buildUrlPayload(valueToWrite) {
     
 }
 
-class AppV2Ndef extends React.Component {
+class Write extends React.Component {
 
   constructor(props){
     super(props)
@@ -25,46 +21,32 @@ class AppV2Ndef extends React.Component {
     };  
   }
    
-
-
   componentDidMount() {
     NfcManager.start();
   }
-
   componentWillUnmount() {
     this._cleanUp();
   }
-
   render() {
     return (
       <View style={{padding: 20}}>
         <Text>Create a new LifeTracker</Text>
-        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}} 
+        <TextInput style={{height: 50, borderColor: 'gray', borderWidth: 1}} 
         onChangeText={(text) => this.setState({name: text}) }
         />
-        <TouchableOpacity 
-          style={{padding: 10, width: 200, margin: 20, borderWidth: 1, borderColor: 'black'}}
-          onPress={this._testNdef}
-        >
-          <Text>Add a tracker</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={{padding: 10, width: 200, margin: 20, borderWidth: 1, borderColor: 'black'}}
-          onPress={this._cleanUp}
-        >
-          <Text>Cancel Add</Text>
-        </TouchableOpacity>
+        <Button 
+                        title='Tap LifeTracker To Add' 
+                        color='coral' 
+                        onPress={this.writeToChip}
+                        />
 
       </View>
     )
   }
-
   _cleanUp = () => {
     NfcManager.cancelTechnologyRequest().catch(() => 0);
-  }
-
-  _testNdef = async () => {
+  }//not in use but cancels request
+  writeToChip= async () => { //func to write to script
     try {
       let resp = await NfcManager.requestTechnology(NfcTech.Ndef, {
         alertMessage: 'Ready to write some NFC tags!'
@@ -84,5 +66,4 @@ class AppV2Ndef extends React.Component {
     }
   }
 }
-
-export default AppV2Ndef;
+export default Write;
