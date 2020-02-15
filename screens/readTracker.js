@@ -121,14 +121,14 @@ class AppV2 extends React.Component {
 
                 
                         <TouchableOpacity 
-                        style={{padding: 10, width: 150, margin: 20, borderWidth: 1, borderColor: 'black'}}
+                        style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
                         onPress={this._test}
                         >
                         <Text>Scan</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity 
-                        style={{padding: 10, width: 150, margin: 20, borderWidth: 1, borderColor: 'black'}}
+                        style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
                         onPress={this._cancel}
                         >
                             <Text>Cancel Scan</Text>
@@ -137,10 +137,10 @@ class AppV2 extends React.Component {
                     <Text>Tracker last read: "{this.state.parsedText}"</Text>
 
                     <TouchableOpacity 
-                    style={{padding: 10, width: 350, margin: 20, borderWidth: 2, borderColor: 'coral', backgroundColor: 'coral', borderRadius: 100,}}
+                    style={{padding: 10, width: 300, margin: 20, borderWidth: 2, borderColor: 'coral', backgroundColor: 'coral', borderRadius: 100,}}
                     onPress={() => navigate("Write", {screen: "Write"})}
                     >
-                        <Text style={{fontSize: 24, color: 'white'}}>    Click to add new tracker</Text>
+                        <Text style={{fontSize: 20, color: 'white'}}>    Click to add new tracker</Text>
                     </TouchableOpacity>
                 
                         
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },  
     trackerText: {
-        padding: 20,
-        fontSize: 24,
+        padding: 10,
+        fontSize: 20,
         color: 'white',
     },  
 
