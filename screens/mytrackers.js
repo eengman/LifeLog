@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, Button, TextInput } from 'react-native';
 import TrackerForm from './trackerForm';
+import NfcManager, { Ndef, NfcEvents} from '../NfcManager';
+import Tag from './components/tag';
 
 
 export default class mytrackers extends React.Component {
@@ -9,6 +11,10 @@ export default class mytrackers extends React.Component {
     constructor(props){
         super(props)
         this.state= {
+            supported: true,
+            enabled: false,
+            isWriting: false,
+            parsedText: "Nothing yet",
             trackers: [
                 { title: 'Water Bottle', num: 0, key: '1' },
                 { title: 'Garbage', num: 0, key: '2'},
@@ -17,6 +23,7 @@ export default class mytrackers extends React.Component {
         };
 
         this.addTracker = this.addTracker.bind(this);
+        //this.increment = this.increment.bind(this);
     }
     
     setModalVisible(visible) {
@@ -29,10 +36,46 @@ export default class mytrackers extends React.Component {
         this.setModalVisible(false);
     }
 
+    increment = (tracker) => {
+        let value = tracker.num + 1;
+        let trackers = [...this.state.trackers];
+        let index = trackers.findIndex(el => el.title === tracker.title);
+        trackers[index] = {...trackers[index], num: value};
+        this.setState({trackers});
+    }
+
     // not working 
     moveScreens = ({ navigation, item }) => {
         navigation.navigate('ReviewDetails', item);
     }
+
+    componentDidMount() {
+        NfcManager.start();
+        
+        NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
+            console.log('tag', tag);
+            this._onTagDiscovered(tag); //writes into 'parsedText
+            NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
+            this.setState({count: this.state.count + 1}); 
+            console.log(this.state.parsedText);
+            //this.state.tags.map((this_tag) => {
+                //console.log(this.state.parsedText);
+                //if (this.state.parsedText === this_tag.tagg.state.tag_name) {
+                    //console.log('here2!');
+                    //this_tag.tagg.state.count = this_tag.tagg.state.count + 1;
+                    //this._updateState();
+                    //console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.tagg.state.count);
+                //}
+                //});
+        
+            NfcManager.unregisterTagEvent().catch(() => 0);
+        });
+      }
+
+    componentWillUnmount() {
+        NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+        NfcManager.unregisterTagEvent().catch(() => 0);
+    }  
 
     render() {
         return (
@@ -56,9 +99,9 @@ export default class mytrackers extends React.Component {
                     <FlatList 
                         data={this.state.trackers} 
                         extraData={this.state.trackers}
-                        renderItem ={({ item, navigation }) => (
+                        renderItem ={({ item, navigation, key }) => (
 
-                            <TouchableOpacity >
+                            <TouchableOpacity onPress={() => this.increment(item)} >
                                 <Text> {item.title} {item.num} </Text>  
                             </TouchableOpacity>
                         
@@ -73,13 +116,63 @@ export default class mytrackers extends React.Component {
                 size={24}
                 onPress={() => this.setModalVisible(true)}
                 
-            />
+                />
 
+                <Button style={styles.button}
+                title='scan'
+                size={24}
+                onPress={this._test}            
+                />
             </View>
         )
 
         
     }
+
+    _cancel = () => {
+        NfcManager.unregisterTagEvent().catch(() => 0);
+      }
+    
+      _test =  async () => {
+        try {
+            await NfcManager.registerTagEvent()
+        } catch (ex) {
+          console.warn('ex', ex);
+          NfcManager.unregisterTagEvent().catch(() => 0);
+          
+        }
+      }
+    
+        _onTagDiscovered = tag => {
+            console.log('Tag Discovered', tag);
+            this.setState({ tag });
+            let text = this._parseText(tag);
+            console.log(text);
+            this.setState({ parsedText: text });
+        }
+    
+        _parseUri = (tag) => {
+            try {
+                if (Ndef.isType(tag.ndefMessage[0], Ndef.TNF_WELL_KNOWN, Ndef.RTD_URI)) {
+                    return Ndef.uri.decodePayload(tag.ndefMessage[0].payload);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            return null;
+        }
+    
+        _parseText = (tag) => {
+            try {
+                if (Ndef.isType(tag.ndefMessage[0], Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
+                    return Ndef.text.decodePayload(tag.ndefMessage[0].payload);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+            return null;
+        }
+
 }
 
 const styles = StyleSheet.create({

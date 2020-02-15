@@ -16,9 +16,9 @@ class AppV2 extends React.Component {
             tag: {},
             count: 0,
             tags: [
-                {tagg: new tag("LifeLog", 0), key:'LifeLog' },
-                {tagg: new tag("Cool", 5), key:'Cool'},
-                {tagg: new tag("Water", 100), key: 'Water' },
+                {tagg: new tag("LifeLog", 0), key:'LifeLog', num: 0 },
+                {tagg: new tag("Cool", 5), key:'Cool', num: 0},
+                {tagg: new tag("Water", 100), key: 'Water', num: 0 },
             ],
             miraculous_something: true, //helpfulvar to update state
         }
@@ -39,25 +39,32 @@ class AppV2 extends React.Component {
         console.log("big balls");
         props.tagg.state.count = props.tagg.state.count + 1;
         this._updateState;
+        //console.log(props.tagg.state.key);
+        //this.setState({'count': this.state.count + 1});
     }
 
   componentDidMount() {
     NfcManager.start();
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, tag => {
-        console.log('tag', tag);
-        this._onTagDiscovered(tag); //writes into 'parsedText
+    
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, tags => {
+        console.log('tag', tags);
+        this._onTagDiscovered(tags); //writes into 'parsedText
         NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
-
+        this.setState({count: this.state.count + 1}); 
+        //console.log(this.state.parsedText);
         this.state.tags.map((this_tag) => {
-            console.log('here!');
+            //console.log(this.state.parsedText);
+            //console.log(props.tagg.state.key);
+            console.log(this_tag.tagg.state.tag_name);
             if (this.state.parsedText === this_tag.tagg.state.tag_name) {
                 console.log('here2!');
                 this_tag.tagg.state.count = this_tag.tagg.state.count + 1;
                 this._updateState();
+                console.log('fuck');
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.tagg.state.count);
             }
             });
-
+    
         NfcManager.unregisterTagEvent().catch(() => 0);
     });
   }
@@ -126,14 +133,15 @@ class AppV2 extends React.Component {
     } catch (ex) {
       console.warn('ex', ex);
       NfcManager.unregisterTagEvent().catch(() => 0);
+      
     }
   }
 
     _onTagDiscovered = tag => {
         console.log('Tag Discovered', tag);
         this.setState({ tag });
-
         let text = this._parseText(tag);
+        console.log(text);
         this.setState({ parsedText: text });
     }
 
@@ -156,7 +164,7 @@ class AppV2 extends React.Component {
         } catch (e) {
             console.log(e);
         }
-        return null;
+        return Ndef.text.decodePayload(tag.ndefMessage[0].payload);
     }
 }
 const styles = StyleSheet.create({
