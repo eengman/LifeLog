@@ -3,6 +3,8 @@ import React from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList } from 'react-native';
 import NfcManager, { Ndef, NfcEvents } from '../NfcManager';
 import tag from './components/tag';
+import writeTracker from './writeTracker';
+
 
 class AppV2 extends React.Component {
 
@@ -15,12 +17,26 @@ class AppV2 extends React.Component {
             parsedText: "nothing yet!",
             tag: {},
             count: 0,
+            name: props.item,
             tags: [
                 {tagg: new tag("LifeLog", 0), key:'LifeLog', num: 0 },
                 {tagg: new tag("Cool", 5), key:'Cool', num: 0},
                 {tagg: new tag("Water", 100), key: 'Water', num: 0 },
             ],
             miraculous_something: true, //helpfulvar to update state
+        }
+    }
+
+    // This adds a new tracker to the current "tags" array 
+    addTracker = (name) => {
+        if(this.isMade(name) === true){
+            return;
+        }else{
+        const obj = {tagg: new tag(name, 0), key: name, num: 0};
+        this.setState({
+            tags: [...this.state.tags, obj]
+        });
+        console.log(this.state.tags);
         }
     }
     _updateState() {
@@ -42,6 +58,11 @@ class AppV2 extends React.Component {
         //console.log(props.tagg.state.key);
         //this.setState({'count': this.state.count + 1});
     }
+    // This checks whether or not the name of the added tracker is in the array 
+    isMade = (val) =>{
+        console.log(val);
+        return this.state.tags.some(item => val === item.key);
+    }
 
   componentDidMount() {
     NfcManager.start();
@@ -50,12 +71,16 @@ class AppV2 extends React.Component {
         console.log('tag', tags);
         this._onTagDiscovered(tags); //writes into 'parsedText
         NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
-        this.setState({count: this.state.count + 1}); 
-        //console.log(this.state.parsedText);
+        this.setState({count: this.state.count + 1});
+        
+        // This checks to see if new tracker is in array yet, if not then it makes it
+        if(this.isMade(this.state.parsedText) === false){
+            this.addTracker(this.state.parsedText);
+            console.log('not made');
+        }
+        
         this.state.tags.map((this_tag) => {
-            //console.log(this.state.parsedText);
-            //console.log(props.tagg.state.key);
-            console.log(this_tag.tagg.state.tag_name);
+            
             if (this.state.parsedText === this_tag.tagg.state.tag_name) {
                 console.log('here2!');
                 this_tag.tagg.state.count = this_tag.tagg.state.count + 1;
@@ -63,6 +88,7 @@ class AppV2 extends React.Component {
                 console.log('fuck');
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.tagg.state.count);
             }
+                
             });
     
         NfcManager.unregisterTagEvent().catch(() => 0);
@@ -84,6 +110,7 @@ class AppV2 extends React.Component {
                         <Text>{val.tagg.info()}</Text>
                         )
                     }
+            
                 
         <Text>Read a Tracker ok</Text>
         <TouchableOpacity 
@@ -99,15 +126,7 @@ class AppV2 extends React.Component {
         >
           <Text>Cancel Scan</Text>
             </TouchableOpacity>
-            <Text>Text I've seen: "{this.state.parsedText}"</Text>
-
-
-            <View style={styles.elementContainer}>
-                <TouchableOpacity style={styles.textinput}><Text>LifeLog</Text></TouchableOpacity>
-                <Button style={styles.button} title="--" onPress={this.valDec} />
-                <Text style={styles.numbers}>{this.state.count}</Text>
-                <Button style={styles.button} title="+" onPress={this.valInc} />
-            </View>  
+            <Text>Tracker last read: "{this.state.parsedText}"</Text>
 
                 <FlatList
                     data={this.state.tags}
@@ -141,7 +160,7 @@ class AppV2 extends React.Component {
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);
-        console.log(text);
+        //console.log(text);
         this.setState({ parsedText: text });
     }
 

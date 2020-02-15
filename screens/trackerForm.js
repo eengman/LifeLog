@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import mytrackers from './mytrackers';
 
 
-export default function TrackerForm( {addTracker }) {
+export default function TrackerForm( { addTracker }) {
 
     return(
         <View>

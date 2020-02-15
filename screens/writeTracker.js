@@ -7,6 +7,7 @@ import {
   TextInput,
 } from 'react-native';
 import NfcManager, {Ndef, NfcTech} from '../NfcManager';
+import AppV2 from './readTracker';
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -54,6 +55,7 @@ class AppV2Ndef extends React.Component {
         >
           <Text>Cancel Add</Text>
         </TouchableOpacity>
+
       </View>
     )
   }
@@ -70,6 +72,7 @@ class AppV2Ndef extends React.Component {
       console.warn(resp);
       let ndef = await NfcManager.getNdefMessage();
       console.warn(ndef);
+      //Obj.addTracker(this.state.name);
       let bytes = buildUrlPayload(this.state.name); //where tag goes in
       await NfcManager.writeNdefMessage(bytes);
       console.warn('successfully write ndef');
