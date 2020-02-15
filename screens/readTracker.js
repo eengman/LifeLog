@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList } from 'react-native';
 import NfcManager, { Ndef, NfcEvents } from '../NfcManager';
 import tag from './components/tag';
+import {ToastAndroid} from 'react-native';
 import writeTracker from './writeTracker';
 
 
@@ -122,7 +123,7 @@ class AppV2 extends React.Component {
                 
                         <TouchableOpacity 
                         style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
-                        onPress={this._test}
+                        onPress={this.read}
                         >
                         <Text>Scan</Text>
                         </TouchableOpacity>
@@ -152,7 +153,8 @@ class AppV2 extends React.Component {
     NfcManager.unregisterTagEvent().catch(() => 0);
   }
 
-  _test = async () => {
+  read = async () => { // read function
+    ToastAndroid.show('Scan a tracker now!', ToastAndroid.LONG);
     try {
         await NfcManager.registerTagEvent()
     } catch (ex) {
@@ -166,6 +168,7 @@ class AppV2 extends React.Component {
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);
+        ToastAndroid.show('Tracker found', ToastAndroid.LONG)
         //console.log(text);
         this.setState({ parsedText: text });
     }
