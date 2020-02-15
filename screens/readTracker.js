@@ -20,8 +20,8 @@ class AppV2 extends React.Component {
             name: props.item,
             tags: [
                 {tagg: new tag("LifeLog", 0), key:'LifeLog', num: 0 },
-                {tagg: new tag("Cool", 5), key:'Cool', num: 0},
-                {tagg: new tag("Water", 100), key: 'Water', num: 0 },
+                {tagg: new tag("Cool", 0), key:'Cool', num: 0},
+                {tagg: new tag("Water", 0), key: 'Water', num: 0 },
             ],
             miraculous_something: true, //helpfulvar to update state
         }
@@ -100,41 +100,50 @@ class AppV2 extends React.Component {
 
 
     render() {
+        // This is for navigating to add tracker screen 
+        const { navigate } = this.props.navigation;
         return (
-            <View style={{ padding: 20 }}>
-                    {
-                    this.state.tags.map((val) =>
-                        <Text>{val.tagg.info()}</Text>
-                        )
-                    }
-            
+
+        <View style={{ padding: 20 }}>
+                    
+                    <FlatList
+                            data={this.state.tags}
+                            renderItem={({ item }) => (
+                                <View style={styles.tracker}>
+                                    <TouchableOpacity onPress={() => this.tagInc(item)}>
+                                        <Text style={styles.trackerText}>=    {item.tagg.state.key} at {item.tagg.state.count}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        />
                 
-        <Text>Read a Tracker ok</Text>
-        <TouchableOpacity 
-          style={{padding: 10, width: 200, margin: 20, borderWidth: 1, borderColor: 'black'}}
-          onPress={this._test}
-        >
-          <Text>Scan</Text>
-        </TouchableOpacity>
+                <View style={styles.buttoncontain}>
 
-        <TouchableOpacity 
-          style={{padding: 10, width: 200, margin: 20, borderWidth: 1, borderColor: 'black'}}
-          onPress={this._cancel}
-        >
-          <Text>Cancel Scan</Text>
-            </TouchableOpacity>
-            <Text>Tracker last read: "{this.state.parsedText}"</Text>
+                
+                        <TouchableOpacity 
+                        style={{padding: 10, width: 150, margin: 20, borderWidth: 1, borderColor: 'black'}}
+                        onPress={this._test}
+                        >
+                        <Text>Scan</Text>
+                        </TouchableOpacity>
 
-                <FlatList
-                    data={this.state.tags}
-                    renderItem={({ item }) => (
-                        <View style={styles.tracker}>
-                            <TouchableOpacity onPress={() => this.tagInc(item)}>
-                                <Text>Tag: {item.tagg.state.key} at {item.tagg.state.count}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                />
+                        <TouchableOpacity 
+                        style={{padding: 10, width: 150, margin: 20, borderWidth: 1, borderColor: 'black'}}
+                        onPress={this._cancel}
+                        >
+                            <Text>Cancel Scan</Text>
+                        </TouchableOpacity>
+                </View>
+                    <Text>Tracker last read: "{this.state.parsedText}"</Text>
+
+                    <TouchableOpacity 
+                    style={{padding: 10, width: 350, margin: 20, borderWidth: 2, borderColor: 'coral', backgroundColor: 'coral', borderRadius: 100,}}
+                    onPress={() => navigate("Write", {screen: "Write"})}
+                    >
+                        <Text style={{fontSize: 24, color: 'white'}}>    Click to add new tracker</Text>
+                    </TouchableOpacity>
+                
+                        
       </View>
     )
   }
@@ -187,6 +196,14 @@ const styles = StyleSheet.create({
 
     home: {
     },
+    buttoncontain: {
+        flexDirection: 'row',
+    },  
+    trackerText: {
+        padding: 20,
+        fontSize: 24,
+        color: 'white',
+    },  
 
     header: {
         alignSelf: 'center',
@@ -219,8 +236,12 @@ const styles = StyleSheet.create({
 
     tracker: {
         borderWidth: 1,
-        paddingTop: 5,
-        backgroundColor: 'grey',
+        padding: 5,
+        backgroundColor: 'coral',
+        borderRadius: 100,
+        margin: 5,
+        borderColor: 'coral',
+        
     },
 
 });

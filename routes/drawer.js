@@ -11,24 +11,24 @@ import MyTrackersStack from './mytrackerStack';
 
 
 const RootDrawerNavigator = createDrawerNavigator({
-    MyTrackers: {
-        screen: MyTrackersStack,
+    Trackers: {
+        screen: ReadStack,
     },
-    Home: {
+    AddTracker: {
+        screen: WriteStack,
+    },
+    HomeOld: {
         screen: HomeStack,
     },
     About: {
         screen: AboutStack,
     },
-    Trackers: {
+    JunkOld: {
         screen: CounterStack,
     },
-    Read: {
-        screen: ReadStack,
+    MyTrackersOld: {
+        screen: MyTrackersStack,
     },
-    Write: {
-        screen: WriteStack,
-    }
 });
 
 export default createAppContainer(RootDrawerNavigator);

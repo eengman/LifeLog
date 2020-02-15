@@ -13,7 +13,9 @@ const screens = {
                 headerTitle: () => <Header navigation={navigation} title='Add a Tracker' />,
             }
         } 
-    }, 
+    },
+    
+    
 }
 
 const WriteStack = createStackNavigator(screens, {

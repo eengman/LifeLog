@@ -4,16 +4,26 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Read from '../screens/readTracker';
 import Header from '../shared/header';
 import React from 'react';
+import Write from '../screens/writeTracker';
 
 const screens = {
     Read: {
         screen: Read,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='Add a Tracker' />,
+                headerTitle: () => <Header navigation={navigation} title='My Trackers' />,
             }
         } 
     }, 
+
+    Write: {
+        screen: Write,
+        navigationOptions: ({ navigation }) => {
+            return {
+                headerTitle: () => <Header navigation={navigation} title='Add a Tracker' />,
+            }
+        } 
+    },
 }
 
 const ReadStack = createStackNavigator(screens, {
