@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { 
-  View, Text,TouchableOpacity, TextInput, Button,
+  View, Text,TouchableOpacity, TextInput, Button, Alert,
 } from 'react-native';
 import NfcManager, {Ndef, NfcTech} from '../NfcManager';
 
@@ -48,20 +48,22 @@ class Write extends React.Component {
   }//not in use but cancels request
   writeToChip= async () => { //func to write to script
     try {
+      Alert.alert('Scan tag now...');
       let resp = await NfcManager.requestTechnology(NfcTech.Ndef, {
         alertMessage: 'Ready to write some NFC tags!'
       });
-      console.warn(resp);
+      //console.warn(resp);
       let ndef = await NfcManager.getNdefMessage();
-      console.warn(ndef);
+      //console.warn(ndef);
       //Obj.addTracker(this.state.name);
       let bytes = buildUrlPayload(this.state.name); //where tag goes in
       await NfcManager.writeNdefMessage(bytes);
-      console.warn('successfully write ndef');
+      //console.warn('successfully write ndef');
+      Alert.alert("Successfully scanned " + '"' + this.state.name + '"');
       await NfcManager.setAlertMessageIOS('I got your tag!');
       this._cleanUp();
     } catch (ex) {
-      console.warn('ex', ex);
+      //console.warn('ex', ex);
       this._cleanUp();
     }
   }

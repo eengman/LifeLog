@@ -55,8 +55,6 @@ class AppV2 extends React.Component {
         console.log("big balls");
         props.tagg.state.count = props.tagg.state.count + 1;
         this._updateState;
-        //console.log(props.tagg.state.key);
-        //this.setState({'count': this.state.count + 1});
     }
     // This checks whether or not the name of the added tracker is in the array 
     isMade = (val) =>{
@@ -71,7 +69,6 @@ class AppV2 extends React.Component {
         console.log('tag', tags);
         this._onTagDiscovered(tags); //writes into 'parsedText
         NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
-        this.setState({count: this.state.count + 1});
         
         // This checks to see if new tracker is in array yet, if not then it makes it
         if(this.isMade(this.state.parsedText) === false){
