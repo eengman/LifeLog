@@ -4,10 +4,11 @@ import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, Fla
 import NfcManager, { Ndef, NfcEvents } from '../NfcManager';
 import tag from './components/tag';
 import {ToastAndroid} from 'react-native';
-import writeTracker from './writeTracker';
 
 
-class AppV2 extends React.Component {
+
+
+class Read extends React.Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +25,7 @@ class AppV2 extends React.Component {
                 {tagg: new tag("Cool", 0), key:'Cool', num: 0},
                 {tagg: new tag("Water", 0), key: 'Water', num: 0 },
             ],
-            miraculous_something: true, //helpfulvar to update state
+            miraculous_something: true, //helpful var to update state
         }
     }
 
@@ -80,11 +81,11 @@ class AppV2 extends React.Component {
         this.state.tags.map((this_tag) => {
             
             if (this.state.parsedText === this_tag.tagg.state.tag_name) {
-                console.log('here2!');
+                console.log('found tag');
                 this_tag.tagg.state.count = this_tag.tagg.state.count + 1;
                 this._updateState();
-                console.log('fuck');
-                console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.tagg.state.count);
+                console.log('updated count');
+                console.log('Found the tag', this.state.parsedText, ' at count' , this_tag.tagg.state.count);
             }
                 
             });
@@ -249,4 +250,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AppV2
+export default Read
