@@ -16,13 +16,9 @@ class AppV2 extends React.Component {
             isWriting: false,
             parsedText: "nothing yet!",
             tag: {},
+            tags:[],
             count: 0,
             name: props.item,
-            tags: [
-                {tagg: new tag("LifeLog", 0), key:'LifeLog', num: 0 },
-                {tagg: new tag("Cool", 0), key:'Cool', num: 0},
-                {tagg: new tag("Water", 0), key: 'Water', num: 0 },
-            ],
             miraculous_something: true, //helpfulvar to update state
         }
     }
@@ -32,37 +28,31 @@ class AppV2 extends React.Component {
         if(this.isMade(name) === true){
             return;
         }else{
-        const obj = {tagg: new tag(name, 0), key: name, num: 0};
-        this.setState({
-            tags: [...this.state.tags, obj]
-        });
-        console.log(this.state.tags);
+            const obj = {tagg: new tag(name, 0), key: name,};
+            global.tags = [...global.tags, obj];
+            console.log(this.state.tags);
         }
     }
     _updateState() {
-        this.setState({ miraculous_something: true});
-    }
-
-    valInc = () => {
-        this.setState({ count: this.state.count + 1});
-    }
-
-    valDec = () => {
-        this.setState({ count: this.state.count - 1 });
+        this.setState({ miraculous_something: false });
+        global.recently = "readTracker.js";
+        this.setState({ miraculous_something: true });
+        this.render; //why does this stuff only work sometimes wtf
+        return;
     }
 
     tagInc = (props) => {
-        console.log("big balls");
+        console.log("inc ", props.tagg.state.name, " to 1+", props.tagg.state.count);
         props.tagg.state.count = props.tagg.state.count + 1;
         this._updateState;
     }
     // This checks whether or not the name of the added tracker is in the array 
     isMade = (val) =>{
         console.log(val);
-        return this.state.tags.some(item => val === item.key);
+        return global.tags.some(item => val === item.key);
     }
 
-  componentDidMount() {
+  componentDidMount() { //scan tracker
     NfcManager.start();
     
     NfcManager.setEventListener(NfcEvents.DiscoverTag, tags => {
@@ -76,12 +66,12 @@ class AppV2 extends React.Component {
             console.log('not made');
         }
         
-        this.state.tags.map((this_tag) => {
+        global.tags.map((this_tag) => {
             
             if (this.state.parsedText === this_tag.tagg.state.tag_name) {
                 console.log('here2!');
                 this_tag.tagg.state.count = this_tag.tagg.state.count + 1;
-                this._updateState();
+                this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
                 console.log('fuck');
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.tagg.state.count);
             }
@@ -106,8 +96,8 @@ class AppV2 extends React.Component {
 
         <View style={{ padding: 20 }}>
                     
-                    <FlatList
-                            data={this.state.tags}
+                <FlatList
+                    data={global.tags}
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
                                     <TouchableOpacity onPress={() => this.tagInc(item)}>
