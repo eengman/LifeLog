@@ -168,7 +168,7 @@ class AppV2 extends React.Component {
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);
-        ToastAndroid.show('Tracker found', ToastAndroid.LONG)
+        ToastAndroid.show('Tracker found', ToastAndroid.LONG) // might be in wrong place
         //console.log(text);
         this.setState({ parsedText: text });
     }
