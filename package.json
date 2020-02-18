@@ -1,39 +1,20 @@
 {
-  "name": "LifeLogProto",
-  "version": "0.0.1",
-  "private": true,
+  "name": "node_js_auth_mongodb",
+  "version": "1.0.0",
+  "description": "NodeJS MongoDB Login trial",
+  "main": "index.js",
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "Guzel_Life_Log",
+  "license": "ISC",
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.6",
-    "formik": "^2.1.4",
-    "react": "16.9.0",
-    "react-native": "0.61.5",
-    "react-native-gesture-handler": "^1.5.3",
-    "react-native-nfc-manager": "^2.1.1",
-    "react-native-reanimated": "^1.7.0",
-    "react-native-safe-area-context": "^0.6.4",
-    "react-native-screens": "^2.0.0-alpha.32",
-    "react-navigation": "^4.1.0",
-    "react-navigation-drawer": "^2.3.3",
-    "react-navigation-stack": "^2.0.16"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.6.2",
-    "@babel/runtime": "^7.6.2",
-    "@react-native-community/eslint-config": "^0.0.5",
-    "babel-jest": "^24.9.0",
-    "eslint": "^6.5.1",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "^0.56.0",
-    "react-test-renderer": "16.9.0"
-  },
-  "jest": {
-    "preset": "react-native"
+    "body-parser": "^1.19.0",
+    "create-hmac": "^1.1.7",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "js-sha512": "^0.8.0",
+    "mongodb": "^3.5.3",
+    "sha512": "0.0.1"
   }
 }
