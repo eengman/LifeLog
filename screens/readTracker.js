@@ -6,7 +6,11 @@ import tag from './components/tag';
 import writeTracker from './writeTracker';
 
 
+
+
 class AppV2 extends React.Component {
+
+
 
     constructor(props) {
         super(props);
@@ -21,6 +25,15 @@ class AppV2 extends React.Component {
             name: props.item,
             miraculous_something: true, //helpfulvar to update state
         }
+        this._loadClient = this._loadClient.bind(this);
+    }
+
+    componentDidMount() {
+        this._loadClient();
+    }
+
+    _loadClient() {
+        return
     }
 
     // This adds a new tracker to the current "tags" array 
