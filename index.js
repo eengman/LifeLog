@@ -1,5 +1,5 @@
 /**
- * @format
+ * npx react-native link, npm install
  */
 
 import {AppRegistry} from 'react-native';
