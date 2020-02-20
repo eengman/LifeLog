@@ -33,7 +33,7 @@ export default class App extends React.Component{
     }
 
     render() {
-        if (false) {
+        if (true) {
             return (
                 <Navigator />
             );
