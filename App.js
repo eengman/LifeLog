@@ -14,16 +14,46 @@ global.tags = [
 ];
 global.recently = "Default";
 
+global.username = "";
+global.loggedIn = false;
+
 
 export default class App extends React.Component{
 
     constructor(props) {
         super(props);
+        this._update = this._update.bind(this);
         this.state = {
             currentUserId: undefined,
             client: undefined,
             loading: true,
+            updateVal: true,
+            messageShown: false,
         };
+    }
+
+    _update() {
+        console.log("Updating App.js");
+        this.setState({
+            messageShown: true
+        });
+    }
+
+
+    async componentDidMount() {
+        try {
+            await this._loadClient();
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                });
+            }, 1500)
+        } catch (err) {
+            console.log(err);
+            this.setState({
+                loading: false,
+            });
+        }
     }
 
     _loadClient() {
@@ -43,22 +73,6 @@ export default class App extends React.Component{
         });
     }
 
-    async componentDidMount() {
-        try {
-            await this._loadClient();
-            setTimeout(() => {
-                this.setState({
-                    loading: false,
-                });
-            }, 1500)
-        } catch (err) {
-            console.log(err);
-            this.setState({
-                loading: false,
-            });
-        }
-    }
-
     render() {
         if (this.state.loading) {
             return (
@@ -70,13 +84,15 @@ export default class App extends React.Component{
                 </View>
             );
         }
-        else if (true) {
+        else if (global.loggedIn) {
             return (
-                <Navigator />
+                    <Navigator />
             );
         } else {
             return (
-                <Login />
+                <Login
+                    action={this._update}
+                />
             );
         }
     }

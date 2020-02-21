@@ -25,6 +25,8 @@ export default class mytrackers extends React.Component {
         this.addTracker = this.addTracker.bind(this);
         //this.increment = this.increment.bind(this);
     }
+
+
     
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
