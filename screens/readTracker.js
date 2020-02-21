@@ -37,7 +37,6 @@ class AppV2 extends React.Component {
             name: props.item,
             miraculous_something: true, //helpfulvar to update state
             modalVisible: false,
-            n: '',
         }
     }
     setModalVisible(visible) {
@@ -83,7 +82,7 @@ class AppV2 extends React.Component {
         console.log(val);
         return this.state.tags.some(item => val === item.key);
     }
-
+    
   componentDidMount() { //scan tracker
     
     NfcManager.start();
@@ -123,7 +122,7 @@ class AppV2 extends React.Component {
         return (
 
         <View style={{ padding: 20 }}>
-
+                
                 <Modal visible={this.state.modalVisible} animationType='slide'>
                     <View style ={styles.modalContent}>
                         
@@ -252,6 +251,7 @@ class AppV2 extends React.Component {
             Alert.alert("Successfully scanned " + '"' + this.state.name + '"');
             console.log("hello from writetochip");
             this.addTracker(this.state.name);
+            this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
             await NfcManager.setAlertMessageIOS('I got your tag!');
             this._cleanUp();
         } catch (ex) {
