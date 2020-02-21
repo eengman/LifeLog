@@ -9,8 +9,8 @@ export default function App() {
     global.tags = [
         { tagg: new tag("Water", 0), key: "Water"},
         { tagg: new tag("LifeLog", 10), key: "LifeLog" },
-        { tagg: new tag("Cool", 5), key: "Cool"},
-        { tagg: new tag("Epic", 5), key: "Epic"}
+        { tagg: new tag("Cool", 5), key: "Cool", goal: 5},
+        { tagg: new tag("Epic", 5), key: "Epic", goal: 10},
     ];
     global.recently = "Default";
     
