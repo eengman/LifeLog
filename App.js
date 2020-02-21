@@ -10,6 +10,7 @@ export default function App() {
         { tagg: new tag("Water", 0), key: "Water"},
         { tagg: new tag("LifeLog", 10), key: "LifeLog" },
         { tagg: new tag("Cool", 5), key: "Cool"},
+        { tagg: new tag("Epic", 5), key: "Epic"}
     ];
     global.recently = "Default";
     
