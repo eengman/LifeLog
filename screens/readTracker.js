@@ -3,7 +3,6 @@ import React from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
-import writeTracker from './writeTracker';
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -21,7 +20,7 @@ I think part of the problem with it not showing up in the list was because the p
 */
 
 
-class AppV2 extends React.Component {
+class Read extends React.Component {
 
     constructor(props) {
         super(props);
@@ -320,4 +319,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AppV2;
+export default Read;

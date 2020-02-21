@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import Home from './screens/home';
 import Navigator from './routes/drawer';
 import tag from './screens/components/tag';
 
