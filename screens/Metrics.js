@@ -8,14 +8,14 @@ import {
   Text,
 } from 'react-native';
 
-var variable = 100 / 20;
+var variable = 100 / 3;
  
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
  
 export default class App extends React.Component {
  
   state = {
-    progress: 20,
+    progress: 0,
     progressWithOnComplete: 0,
     progressCustomized: 0,
   }
@@ -49,7 +49,7 @@ export default class App extends React.Component {
           <View style={styles.buttonContainer}>
             <View style={styles.buttonInner}>
               <Button
-                title="Increase 10%"
+                title="Progress"
                 onPress={this.increase.bind(this, 'progress', variable)}
               />
             </View>
