@@ -10,7 +10,7 @@ const screens = {
         screen: Read,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='My Trackers' />,
+                headerTitle: () => <Header navigation={navigation} title='MY TRACKERS'/>,
             }
         } 
     },
@@ -20,7 +20,7 @@ const screens = {
 
 const ReadStack = createStackNavigator(screens, {
     defaultNavigationOptions: {
-        headerStyle: { backgroundColor: 'coral', height: 60 }
+        headerStyle: { backgroundColor: '#074e67', height: 70 }
     }
 });
 

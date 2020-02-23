@@ -125,25 +125,26 @@ class Read extends React.Component {
                 <Modal visible={this.state.modalVisible} animationType='slide'>
                     <View style ={styles.modalContent}>
                         
-                    <View style={{padding: 20}}>
-                        <Text>Create a new LifeTracker</Text>
-                        <TextInput style={{height: 50, borderColor: 'gray', borderWidth: 1}} 
+                    <View style={{padding: 50}}>
+                        <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
+                        <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
-                        <Button 
-                        title='Tap LifeTracker To Add' 
-                        color='coral' 
+                        <TouchableOpacity 
+                        style={{padding: 10, width: 300, margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
-                        />
+                        >
+                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
+                        </TouchableOpacity>
         
 
                     </View>
-
-                        <Button 
-                            title='close'
-                            size={24}
-                            onPress={() => this.setModalVisible(false)}
-                        />
+                    <TouchableOpacity 
+                    style={{padding: 10, width: 450, margin: 20, marginTop: 250, borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    onPress={() => this.setModalVisible(false)}
+                    >
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CLOSE</Text>
+                    </TouchableOpacity>
                     </View>
 
                 </Modal>
@@ -163,26 +164,19 @@ class Read extends React.Component {
 
                 
                         <TouchableOpacity 
-                        style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
+                        style={{padding: 10, width: 300, margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this._test}
                         >
-                        <Text>Scan</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                        style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
-                        onPress={this._cancel}
-                        >
-                            <Text>Cancel Scan</Text>
+                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>SCAN</Text>
                         </TouchableOpacity>
                 </View>
-                    <Text>Tracker last read: "{this.state.parsedText}"</Text>
+                    <Text style={{alignSelf: 'center'}}>LOG: "{this.state.parsedText}"</Text>
 
                     <TouchableOpacity 
-                    style={{padding: 10, width: 300, margin: 20, borderWidth: 2, borderColor: 'coral', backgroundColor: 'coral', borderRadius: 100,}}
+                    style={{padding: 10, width: 450, margin: 20, marginTop: 150, borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
                     onPress={() => this.setModalVisible(true)}
                     >
-                        <Text style={{fontSize: 20, color: 'white'}}>    Click to add new tracker</Text>
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
                     </TouchableOpacity>
 
 
@@ -239,7 +233,7 @@ class Read extends React.Component {
     // This is from the write tracker page 
     writeToChip= async () => { //func to write to script
         try {
-            Alert.alert('Scan tag now...');
+            Alert.alert('Scan NFC tag');
             let resp = await NfcManager.requestTechnology(NfcTech.Ndef, {
                 alertMessage: 'Ready to write some NFC tags!'
             });
@@ -276,11 +270,13 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 20,
         color: 'white',
+        fontWeight: 'bold'
     },  
 
     header: {
         alignSelf: 'center',
         fontSize: 40,
+        color: 'white'
     },
 
     elementContainer: {
@@ -310,12 +306,30 @@ const styles = StyleSheet.create({
     tracker: {
         borderWidth: 1,
         padding: 5,
-        backgroundColor: 'coral',
+        backgroundColor: '#05878a',
         borderRadius: 100,
         margin: 5,
-        borderColor: 'coral',
+        borderColor: '#05878a',
         
     },
+    button2: {
+        fontSize: 30, 
+        color: 'white', 
+        margin: 5, 
+        padding: 5, 
+        alignSelf: 'center', 
+        fontWeight: 'bold'
+    },
+    touch: {
+        padding: 10, 
+        width: 450, 
+        margin: 20, 
+        marginTop: 350, 
+        borderWidth: 2, 
+        borderColor: '#05878a', 
+        backgroundColor: '#074e67',  
+        alignSelf: 'center'
+    }
 
 });
 
