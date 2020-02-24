@@ -8,7 +8,7 @@ import {
   Text,
 } from 'react-native';
 
-var variable = 100 / 3;
+var incPercent = 100 / 3;
  
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
  
@@ -37,20 +37,20 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View>
-          <Text style={styles.label}>Bar with backgroundColorOnComplete prop</Text>
+          <Text style={styles.label}>Daily Progress!</Text>
           <ProgressBarAnimated
             width={barWidth}
             value={this.state.progress}
             backgroundColorOnComplete="#6CC644"
             onComplete={() => {
-                Alert.alert('Hey!', 'onComplete event fired!');
+                Alert.alert('Hey!', 'Good job!');
               }}
           />
           <View style={styles.buttonContainer}>
             <View style={styles.buttonInner}>
               <Button
                 title="Progress"
-                onPress={this.increase.bind(this, 'progress', variable)}
+                onPress={this.increase.bind(this, 'progress', incPercent)}
               />
             </View>
           </View>

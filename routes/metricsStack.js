@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Metrics from '../screens/Metrics';
 import Header from '../shared/header';
 import React from 'react';
+import { StackNavigator } from 'react-navigation';
 
 
 const screens = {

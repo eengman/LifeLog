@@ -3,6 +3,10 @@ import React from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
+import metrics from './Metrics';
+import { StackNavigator } from 'react-navigation';
+
+
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -73,7 +77,7 @@ class Read extends React.Component {
 
     tagInc = (props) => {
         console.log("inc ", props.tagg.state.name, " to 1+", props.tagg.state.count);
-        props.tagg.state.count = props.tagg.state.count + 1;
+        props.tagg.state.count = props.tagg.state.count + 1;        
         this._updateState();
     }
     // This checks whether or not the name of the added tracker is in the array 
@@ -116,6 +120,7 @@ class Read extends React.Component {
 
 
     render() {
+        var {navigate} = this.props.navigation;
         // This is for navigating to add tracker screen  DONT NEED BUT KEEP IN CASE WE WANT TO NAVIGATE TO ANOTHER SCREEN FROM HERE IN FUTURE 
         //const { navigate } = this.props.navigation;
         return (
@@ -152,7 +157,7 @@ class Read extends React.Component {
                     data={this.state.tags}
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
-                                    <TouchableOpacity onPress={() => this.tagInc(item)}>
+                                    <TouchableOpacity onPress={() => navigate('Metrics')}>
                                         <Text style={styles.trackerText}>=   {item.tagg.state.key} at {item.tagg.state.count}</Text>
                                     </TouchableOpacity>
                                 </View>
