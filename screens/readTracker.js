@@ -138,8 +138,23 @@ class Read extends React.Component {
         NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
         
         // This checks to see if new tracker is in array yet, if not then it makes it
-        if(this.isMade(this.state.parsedText) === false){
-            this.addTracker(this.state.parsedText);
+        if(this.isMade(this.state.parsedText) === false){   // this if statement checks to see if the tracker is part of the list. If unknown, then it prompts if user would like to add to it
+            //this.addTracker(this.state.parsedText);
+            Alert.alert(        
+                'The tracker ' + "'" + this.state.parsedText + "'" + ' is not one of your trackers',
+                'Would you like to add this to your current trackers?',
+                [
+                  {text: 'Cancel',
+                   onPress: () => console.log('Ask me later pressed'),
+                   style: 'cancel'
+                  },
+                  {
+                    text: 'Add',
+                    onPress: () => this.addTracker(this.state.parsedText),
+                  },
+                ],
+                {cancelable: false},
+              );
             console.log('not made');
         }
         this.state.tags.map((this_tag) => {    
