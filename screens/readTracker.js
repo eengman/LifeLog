@@ -6,8 +6,6 @@ import tag from './components/tag';
 import metrics from './Metrics';
 import { StackNavigator } from 'react-navigation';
 
-
-
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
         Ndef.uriRecord(valueToWrite),
@@ -61,6 +59,53 @@ class Read extends React.Component {
         }
     }
 
+    trackerOptions = (item) => {
+        const { navigate } = this.props.navigation;
+        Alert.alert(
+            'What would you like to do?',
+            '',
+            [
+              {text: 'Cancel',
+               onPress: () => console.log('Ask me later pressed'),
+               style: 'cancel'
+              },
+              {
+                text: 'Delete tracker',
+                onPress: () => this.deleteConfirm(item.key),
+              },
+              {text: 'See Tracker Details', onPress: () => navigate('Metrics')},
+              {}
+            ],
+            {cancelable: false},
+          );
+    }
+
+    deleteConfirm = (key) => {
+        Alert.alert(
+            'Are you sure you want to delete the tracker?',
+            '',
+            [
+              {text: 'Cancel',
+               onPress: () => console.log('Ask me later pressed'),
+               style: 'cancel'
+              },
+              {
+                text: 'Yes I am sure',
+                onPress: () => this.deleteTracker(key),
+              },
+            ],
+            {cancelable: false},
+          );
+    }
+
+    deleteTracker = (key) => {
+        
+        const filteredData = global.tags.filter(item => item.key !== key);
+        this.setState({ tags: filteredData});
+        
+    }
+
+
     test(){
         alert('hello');
     }
@@ -77,7 +122,7 @@ class Read extends React.Component {
 
     tagInc = (props) => {
         console.log("inc ", props.tagg.state.name, " to 1+", props.tagg.state.count);
-        props.tagg.state.count = props.tagg.state.count + 1;        
+        props.tagg.state.count = props.tagg.state.count + 1;
         this._updateState();
     }
     // This checks whether or not the name of the added tracker is in the array 
@@ -96,8 +141,23 @@ class Read extends React.Component {
         NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
         
         // This checks to see if new tracker is in array yet, if not then it makes it
-        if(this.isMade(this.state.parsedText) === false){
-            this.addTracker(this.state.parsedText);
+        if(this.isMade(this.state.parsedText) === false){   // this if statement checks to see if the tracker is part of the list. If unknown, then it prompts if user would like to add to it
+            //this.addTracker(this.state.parsedText);
+            Alert.alert(        
+                'The tracker ' + "'" + this.state.parsedText + "'" + ' is not one of your trackers',
+                'Would you like to add this to your current trackers?',
+                [
+                  {text: 'Cancel',
+                   onPress: () => console.log('Ask me later pressed'),
+                   style: 'cancel'
+                  },
+                  {
+                    text: 'Add',
+                    onPress: () => this.addTracker(this.state.parsedText),
+                  },
+                ],
+                {cancelable: false},
+              );
             console.log('not made');
         }
         this.state.tags.map((this_tag) => {    
@@ -120,74 +180,68 @@ class Read extends React.Component {
 
 
     render() {
-        var {navigate} = this.props.navigation;
         // This is for navigating to add tracker screen  DONT NEED BUT KEEP IN CASE WE WANT TO NAVIGATE TO ANOTHER SCREEN FROM HERE IN FUTURE 
         //const { navigate } = this.props.navigation;
         return (
 
-        <View style={{ padding: 20 }}>
+        <View style={styles.container}>
                 
                 <Modal visible={this.state.modalVisible} animationType='slide'>
                     <View style ={styles.modalContent}>
                         
-                    <View style={{padding: 20}}>
-                        <Text>Create a new LifeTracker</Text>
-                        <TextInput style={{height: 50, borderColor: 'gray', borderWidth: 1}} 
+                    <View style={{padding: 50}}>
+                        <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
+                        <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
-                        <Button 
-                        title='Tap LifeTracker To Add' 
-                        color='coral' 
+                        <TouchableOpacity 
+                        style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
-                        />
+                        >
+                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
+                        </TouchableOpacity>
         
 
                     </View>
-
-                        <Button 
-                            title='close'
-                            size={24}
-                            onPress={() => this.setModalVisible(false)}
-                        />
+                    <TouchableOpacity 
+                    style={{padding: 10, width: '100%' , marginTop: '48%', margin: 20,  borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    onPress={() => this.setModalVisible(false)}
+                    >
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CANCEL</Text>
+                    </TouchableOpacity>
                     </View>
 
                 </Modal>
                     
                 <FlatList
+                    style={{padding: 10}}
                     data={this.state.tags}
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
-                                    <TouchableOpacity onPress={() => navigate('Metrics')}>
+                                    <TouchableOpacity onPress={() => this.trackerOptions(item)}>
                                         <Text style={styles.trackerText}>=   {item.tagg.state.key} at {item.tagg.state.count}</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}
                         />
-                
+
                 <View style={styles.buttoncontain}>
 
                 
                         <TouchableOpacity 
-                        style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
+                        style={{padding: 10, width: '70%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this._test}
                         >
-                        <Text>Scan</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                        style={{padding: 10, width: 120, margin: 20, borderWidth: 1, borderColor: 'black'}}
-                        onPress={this._cancel}
-                        >
-                            <Text>Cancel Scan</Text>
+                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>SCAN</Text>
                         </TouchableOpacity>
                 </View>
-                    <Text>Tracker last read: "{this.state.parsedText}"</Text>
+                    
 
                     <TouchableOpacity 
-                    style={{padding: 10, width: 300, margin: 20, borderWidth: 2, borderColor: 'coral', backgroundColor: 'coral', borderRadius: 100,}}
+                    style={{padding: 10, width: '100%', margin: 0, marginTop: 20, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
                     onPress={() => this.setModalVisible(true)}
                     >
-                        <Text style={{fontSize: 20, color: 'white'}}>    Click to add new tracker</Text>
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
                     </TouchableOpacity>
 
 
@@ -244,7 +298,7 @@ class Read extends React.Component {
     // This is from the write tracker page 
     writeToChip= async () => { //func to write to script
         try {
-            Alert.alert('Scan tag now...');
+            Alert.alert('Scan NFC tag');
             let resp = await NfcManager.requestTechnology(NfcTech.Ndef, {
                 alertMessage: 'Ready to write some NFC tags!'
             });
@@ -272,20 +326,26 @@ class Read extends React.Component {
 
 const styles = StyleSheet.create({
 
-    home: {
+    container: {
+        //padding: 20,
+        width: '100%',
+        //apsectRatio: 2/1,
+        height: '100%',
     },
     buttoncontain: {
-        flexDirection: 'row',
+        //flexDirection: 'row',
     },  
     trackerText: {
         padding: 10,
         fontSize: 20,
         color: 'white',
+        fontWeight: 'bold'
     },  
 
     header: {
         alignSelf: 'center',
         fontSize: 40,
+        color: 'white'
     },
 
     elementContainer: {
@@ -315,12 +375,33 @@ const styles = StyleSheet.create({
     tracker: {
         borderWidth: 1,
         padding: 5,
-        backgroundColor: 'coral',
+        backgroundColor: '#05878a',
         borderRadius: 100,
         margin: 5,
-        borderColor: 'coral',
+        borderColor: '#05878a',
         
     },
+    button2: {
+        fontSize: 30, 
+        color: 'white', 
+        margin: 5, 
+        padding: 5, 
+        alignSelf: 'center', 
+        fontWeight: 'bold'
+    },
+    touch: {
+        padding: 10, 
+        width: 450, 
+        margin: 20, 
+        marginTop: 350, 
+        borderWidth: 2, 
+        borderColor: '#05878a', 
+        backgroundColor: '#074e67',  
+        alignSelf: 'center'
+    },
+    modalContent: {
+        flex: 2,
+    }
 
 });
 
