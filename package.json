@@ -14,7 +14,7 @@
     "formik": "^2.1.4",
     "react": "16.9.0",
     "react-native": "0.61.5",
-    "react-native-gesture-handler": "^1.5.3",
+    "react-native-gesture-handler": "^1.6.0",
     "react-native-nfc-manager": "^2.1.1",
     "react-native-progress-bar-animated": "^1.0.6",
     "react-native-reanimated": "^1.7.0",
