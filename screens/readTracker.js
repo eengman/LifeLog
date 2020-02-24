@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
+
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -10,6 +11,8 @@ function buildUrlPayload(valueToWrite) {
     ]);
     
 }
+
+
 
 /*
 Read and write are combined on this page -Eric 
@@ -36,8 +39,26 @@ class Read extends React.Component {
             name: props.item,
             miraculous_something: true, //helpfulvar to update state
             modalVisible: false,
+            appState: AppState.currentState,
         }
     }
+    // --------------------Testing app state ---------------------
+    _handleAppStateChange = async (nextAppState) => {
+        if (
+          this.state.appState.match(/inactive|background/) &&
+          nextAppState === 'active'
+        ) {
+          console.log('App has come to the foreground!');
+        }else{
+          console.log('app has come into background');
+
+        }
+        this.setState({appState: nextAppState});
+      };
+
+
+
+    //--------------------Testing app state -----------------------
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
@@ -128,10 +149,15 @@ class Read extends React.Component {
         return this.state.tags.some(item => val === item.key);
     }
     
-  componentDidMount() { //scan tracker
-    
+  componentDidMount = async() => { //scan tracker
+    AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
+    try {
+        await NfcManager.registerTagEvent()
+    } catch (ex) {
+        console.warn('ex', ex);
+        NfcManager.unregisterTagEvent().catch(() => 0);
+    }
     NfcManager.start();
-    
     NfcManager.setEventListener(NfcEvents.DiscoverTag, tags => {
         console.log('tag', tags);
         this._onTagDiscovered(tags); //writes into 'parsedText
@@ -166,11 +192,12 @@ class Read extends React.Component {
                 
             });
     
-        NfcManager.unregisterTagEvent().catch(() => 0);
+        //NfcManager.unregisterTagEvent().catch(() => 0);           // commenting out this line makes NFC always listening
     });
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
     NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
     NfcManager.unregisterTagEvent().catch(() => 0);
   }
@@ -179,6 +206,7 @@ class Read extends React.Component {
     render() {
         // This is for navigating to add tracker screen  DONT NEED BUT KEEP IN CASE WE WANT TO NAVIGATE TO ANOTHER SCREEN FROM HERE IN FUTURE 
         //const { navigate } = this.props.navigation;
+        
         return (
 
         <View style={styles.container}>
@@ -209,7 +237,7 @@ class Read extends React.Component {
                     </View>
 
                 </Modal>
-                    
+                    <Text>current state is: {this.state.appState}</Text>
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.tags}
