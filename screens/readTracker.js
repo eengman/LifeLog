@@ -57,6 +57,52 @@ class Read extends React.Component {
         }
     }
 
+    trackerOptions = (item) => {
+        Alert.alert(
+            'What would you like to do?',
+            '',
+            [
+              {text: 'Cancel',
+               onPress: () => console.log('Ask me later pressed'),
+               style: 'cancel'
+              },
+              {
+                text: 'Delete tracker',
+                onPress: () => this.deleteConfirm(item.key),
+              },
+              {text: 'See Tracker Details', onPress: () => console.log('OK Pressed')},
+              {}
+            ],
+            {cancelable: false},
+          );
+    }
+
+    deleteConfirm = (key) => {
+        Alert.alert(
+            'Are you sure you want to delete the tracker?',
+            '',
+            [
+              {text: 'Cancel',
+               onPress: () => console.log('Ask me later pressed'),
+               style: 'cancel'
+              },
+              {
+                text: 'Yes I am sure',
+                onPress: () => this.deleteTracker(key),
+              },
+            ],
+            {cancelable: false},
+          );
+    }
+
+    deleteTracker = (key) => {
+        
+        const filteredData = global.tags.filter(item => item.key !== key);
+        this.setState({ tags: filteredData});
+        
+    }
+
+
     test(){
         alert('hello');
     }
@@ -120,7 +166,7 @@ class Read extends React.Component {
         //const { navigate } = this.props.navigation;
         return (
 
-        <View style={{ padding: 20 }}>
+        <View style={styles.container}>
                 
                 <Modal visible={this.state.modalVisible} animationType='slide'>
                     <View style ={styles.modalContent}>
@@ -131,7 +177,7 @@ class Read extends React.Component {
                             onChangeText={(text) => this.setState({name: text}) }
                         />
                         <TouchableOpacity 
-                        style={{padding: 10, width: 300, margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
+                        style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
@@ -140,31 +186,32 @@ class Read extends React.Component {
 
                     </View>
                     <TouchableOpacity 
-                    style={{padding: 10, width: 450, margin: 20, marginTop: 250, borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    style={{padding: 10, width: '100%' , marginTop: '48%', margin: 20,  borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
                     onPress={() => this.setModalVisible(false)}
                     >
-                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CLOSE</Text>
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CANCEL</Text>
                     </TouchableOpacity>
                     </View>
 
                 </Modal>
                     
                 <FlatList
+                    style={{padding: 10}}
                     data={this.state.tags}
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
-                                    <TouchableOpacity onPress={() => this.tagInc(item)}>
+                                    <TouchableOpacity onPress={() => this.trackerOptions(item)}>
                                         <Text style={styles.trackerText}>=   {item.tagg.state.key} at {item.tagg.state.count}</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}
                         />
-                
+
                 <View style={styles.buttoncontain}>
 
                 
                         <TouchableOpacity 
-                        style={{padding: 10, width: 300, margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
+                        style={{padding: 10, width: '70%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this._test}
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>SCAN</Text>
@@ -173,7 +220,7 @@ class Read extends React.Component {
                     <Text style={{alignSelf: 'center'}}>LOG: "{this.state.parsedText}"</Text>
 
                     <TouchableOpacity 
-                    style={{padding: 10, width: 450, margin: 20, marginTop: 150, borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    style={{padding: 10, width: '100%', margin: 0, marginTop: 20, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
                     onPress={() => this.setModalVisible(true)}
                     >
                         <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
@@ -261,10 +308,14 @@ class Read extends React.Component {
 
 const styles = StyleSheet.create({
 
-    home: {
+    container: {
+        //padding: 20,
+        width: '100%',
+        //apsectRatio: 2/1,
+        height: '100%',
     },
     buttoncontain: {
-        flexDirection: 'row',
+        //flexDirection: 'row',
     },  
     trackerText: {
         padding: 10,
@@ -329,6 +380,9 @@ const styles = StyleSheet.create({
         borderColor: '#05878a', 
         backgroundColor: '#074e67',  
         alignSelf: 'center'
+    },
+    modalContent: {
+        flex: 2,
     }
 
 });
