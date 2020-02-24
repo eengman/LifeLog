@@ -217,7 +217,7 @@ class Read extends React.Component {
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>SCAN</Text>
                         </TouchableOpacity>
                 </View>
-                    <Text style={{alignSelf: 'center'}}>LOG: "{this.state.parsedText}"</Text>
+                    
 
                     <TouchableOpacity 
                     style={{padding: 10, width: '100%', margin: 0, marginTop: 20, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
