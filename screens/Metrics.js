@@ -8,6 +8,7 @@ import {
   Text,
 } from 'react-native';
 
+//var value =
 var incPercent = 100 / 3;
  
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
@@ -16,7 +17,7 @@ export default class App extends React.Component {
  
   state = {
     progress: 0,
-    progressWithOnComplete: 0,
+    epicProgress: 0,
     progressCustomized: 0,
   }
  
@@ -37,10 +38,10 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View>
-          <Text style={styles.label}>Daily Progress!</Text>
+          <Text style={styles.label}>Epic</Text>
           <ProgressBarAnimated
             width={barWidth}
-            value={this.state.progress}
+            value={this.state.epicProgress}
             backgroundColorOnComplete="#6CC644"
             onComplete={() => {
                 Alert.alert('Hey!', 'Good job!');
@@ -50,13 +51,36 @@ export default class App extends React.Component {
             <View style={styles.buttonInner}>
               <Button
                 title="Progress"
-                onPress={this.increase.bind(this, 'progress', incPercent)}
+                onPress={this.increase.bind('','epicProgress', incPercent)}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={styles.separator} />
+        <View>
+          <Text style={styles.label}>Epicness</Text>
+          <ProgressBarAnimated
+            width={barWidth}
+            value={this.state.epicProgress}
+            backgroundColorOnComplete="#6CC644"
+            onComplete={() => {
+              Alert.alert('Hey!', 'onComplete event fired!');
+            }}
+          />
+          <View style={styles.buttonContainer}>
+            <View style={styles.buttonInner}>
+              <Button
+                title="Progress"
+                onPress={this.increase.bind(this, 'epicProgress', incPercent)}
               />
             </View>
           </View>
         </View>
         
       </View>
+
+      
+      
     );
   }
 }
