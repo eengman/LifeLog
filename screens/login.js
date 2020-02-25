@@ -105,25 +105,25 @@ export default class Login extends React.Component {
             this.setState({ previous_log_attempt: 1 });
             return;
         }
-        else {
+        else {//if data looks pretty good
             const stitchAppClient = Stitch.defaultAppClient;
             const mongoClient = stitchAppClient.getServiceClient(
                 RemoteMongoClient.factory,
                 "mongodb-atlas"
-            );
+            );//setup client stuff
             const db = mongoClient.db("LifeLog_DB");
-            const users = db.collection("users");
-            if (this.state.log_typed_un != "" && this.state.log_typed_pass) {
-                users.findOne({
+            const users = db.collection("users");//with this db and collection
+            if (this.state.log_typed_un != "" && this.state.log_typed_pass) {//if we have some data to pass in
+                users.findOne({//find some data with this un
                     username: this.state.log_typed_un,
-                }).then((found) => {
+                }).then((found) => {//when server returns something
                     if (found != null) {//if we found username
                         console.log("Found username");
-                        if (found.password == this.state.log_typed_pass) {
+                        if (found.password == this.state.log_typed_pass) {//if correct password also
                             console.log("Found pass :^)");
                             global.username = this.state.log_typed_un;
                             global.loggedIn = true;
-                            this.setState({ previous_log_attempt: 2 });
+                            this.setState({ previous_log_attempt: 2 });//state modifications
                             this.props.action();
                         } else {//wrong pass
                             this.setState({ previous_log_attempt: 4 });
