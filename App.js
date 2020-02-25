@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import { Platform, Text, StatusBar, StyleSheet, View, AppState, ActivityIndicator } from "react-native";
 import Home from './screens/home';
@@ -55,7 +56,7 @@ export default class App extends React.Component{
             });
         }
     }
-
+    
     _loadClient() {
         Stitch.initializeDefaultAppClient("lifelog_db-bshms").then(client => {
             this.setState({ client });
@@ -72,7 +73,7 @@ export default class App extends React.Component{
                 });
         });
     }
-
+    
     render() {
         if (this.state.loading) {
             return (
@@ -84,7 +85,7 @@ export default class App extends React.Component{
                 </View>
             );
         }
-        else if (global.loggedIn) {
+        else if (!global.loggedIn) {
             return (
                     <Navigator />
             );
