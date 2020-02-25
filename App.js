@@ -85,7 +85,7 @@ export default class App extends React.Component{
                 </View>
             );
         }
-        else if (!global.loggedIn) {
+        else if (global.loggedIn) {
             return (
                     <Navigator />
             );
