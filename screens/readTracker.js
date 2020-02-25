@@ -401,7 +401,7 @@ class Read extends React.Component {
                             )}
                         />
 
-                <View style={styles.buttoncontain}>
+              {/* <View style={styles.buttoncontain}>
 
                 
                         <TouchableOpacity 
@@ -410,7 +410,7 @@ class Read extends React.Component {
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>SCAN</Text>
                         </TouchableOpacity>
-                </View>
+                            </View> */}
                     
 
                     <TouchableOpacity 
@@ -418,7 +418,7 @@ class Read extends React.Component {
                     onPress={() => this.setModalVisible(true)}
                     >
                         <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> 
 
 
                     
