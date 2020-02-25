@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
@@ -95,7 +95,7 @@ class Read extends React.Component {
               }
               this.setState({ value: !this.state.value});
               this.setState({ text: ""});
-              this._updateState();
+              //this._updateState();
             })
             .catch(err => {
               console.warn(err);
@@ -213,7 +213,7 @@ class Read extends React.Component {
         if(this.isMade(this.state.parsedText) === false){   // this if statement checks to see if the tracker is part of the list. If unknown, then it prompts if user would like to add to it
             // THIS STUFF DOESNT WORK RIGHT SINCE WE NOW PULL FROM THE DATABASE AND THIS IS CHECKING THE GLOBAL TAGS
             // HOWEVER ITS STILL USEFUL 
-            
+
             //this.addTracker(this.state.parsedText);
             /*
             Alert.alert(        
@@ -391,6 +391,7 @@ class Read extends React.Component {
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}
+                    refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
                                     <TouchableOpacity onPress={() => this._onPressDelete(item._id)}>
