@@ -136,7 +136,8 @@ class Read extends React.Component {
               },
               {
                 text: 'Delete tracker',
-                onPress: () => this.deleteConfirm(item.key),
+                onPress: () => this.deleteConfirm(item),
+               
               },
               {text: 'See Tracker Details', onPress: () => console.log('OK Pressed')},
               {}
@@ -156,22 +157,22 @@ class Read extends React.Component {
               },
               {
                 text: 'Yes I am sure',
-                onPress: () => this.deleteTracker(key),
+                onPress: () => this._onPressDelete(key),
               },
             ],
             {cancelable: false},
           );
     }
-
+/*
     deleteTracker = (key) => {
         
         const filteredData = global.trackers.filter(item => item.key !== key);
         this.setState({ trackers: filteredData});
         
-    }
+    }*/
 
 
-    test(){
+    test(){// what is this for - Dylan
         alert('hello');
     }
     
@@ -409,7 +410,7 @@ class Read extends React.Component {
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
-                                    <TouchableOpacity onPress={() => this._onPressDelete(item._id)}>
+                                    <TouchableOpacity onPress={() => this.trackerOptions(item._id)}>
                                         <Text style={styles.trackerText}>=   {item.name} at {item.count} goal: {item.goal}</Text>
                                     </TouchableOpacity>
                                 </View>
