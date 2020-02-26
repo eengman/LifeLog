@@ -377,7 +377,7 @@ class Read extends React.Component {
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
-                        <Text>hello</Text>
+                        
 
                     </View>
                     <TouchableOpacity 
