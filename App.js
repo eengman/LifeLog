@@ -7,6 +7,7 @@ import tag from './screens/components/tag';
 import Login from './screens/login';
 import { Stitch, AnonymousCredential } from "mongodb-stitch-react-native-sdk";
 import { C, createAppContainer } from 'react-navigation';
+import AsyncStorage from '@react-native-community/async-storage';
 
 global.tags = [
     { tagg: new tag("Water", 0), key: "Water" },
@@ -17,8 +18,23 @@ global.recently = "Default";
 
 global.username = "";
 global.loggedIn = false;
+global.update = false;
 
 
+export function masterUpdate(){//why does this not work wtf
+    console.log("update main");
+    if(global.update == true){
+        console.log("Updating App.js");
+        App._update();
+        App.call(_update());
+        App._update;
+        App.setState({
+            update: !update,
+        });
+        App.
+        global.update = false;
+    } 
+}
 
 export default class App extends React.Component{
 
@@ -31,15 +47,32 @@ export default class App extends React.Component{
             loading: true,
             updateVal: true,
             messageShown: false,
+            update: false,
         };
         //global.currentUserId = this.state.currentUserId;
+        this.tryGetLogin();
     }
+
+    tryGetLogin = async () => {
+        try {
+            console.log("trying to find stored username...");
+          const value = await AsyncStorage.getItem('@stored_username')
+          if(value !== null) {
+                console.log("found storage username: ", value);
+                global.username= value;
+                global.loggedIn= true;
+          }
+        } catch(e) {
+          // error reading value
+        }
+      }
     
     _update() {
         console.log("Updating App.js");
         this.setState({
             messageShown: true
         });
+        global.update = false;
     }
 
 
@@ -77,6 +110,7 @@ export default class App extends React.Component{
     }
     
     render() {
+        
         if (this.state.loading) {
             return (
                 <View style={{ paddingVertical: '50%' }}>
@@ -89,7 +123,9 @@ export default class App extends React.Component{
         }
         else if (global.loggedIn) {
             return (
-                    <Navigator />
+                    <Navigator 
+                        action={this._update}
+                    />
             );
         } else {
             return (

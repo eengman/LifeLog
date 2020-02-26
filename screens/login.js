@@ -2,6 +2,7 @@
 import React from 'react';
 import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler } from 'react-native';
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
+import AsyncStorage from '@react-native-community/async-storage';
 //import Confetti from "react-native-confetti";
 
 var height = Dimensions.get("window").height;
@@ -10,7 +11,7 @@ export default class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        if (true) { //true to ignore login
+        if (false) { //true to ignore login
             global.username = "LLDev";
             global.loggedIn = true;
             this.props.action();
@@ -85,6 +86,7 @@ export default class Login extends React.Component {
                                 global.username = this.state.typed_un;
                                 this.setState({ value: !this.state.value, previous_reg_attempt: 0 });
                                 this.setState({ typed_pass: "", typed_un: "" });
+                                
                             })
                             .catch(err => {
                                 console.warn(err);
@@ -94,6 +96,15 @@ export default class Login extends React.Component {
             }
         }
     };
+
+    saveLogin = async () => {
+        try {
+            console.log("storing username: ", global.username, "at @stored_username");
+          await AsyncStorage.setItem('@stored_username', global.username)
+        } catch (e) {
+          // saving error
+        }
+      }
 
     handleLogin = () => {//previous_log_attempt: 0=no previous, 1= bad data, 2= succeed, 3= no username, 4 = wrong pass
         Keyboard.dismiss();
@@ -123,6 +134,7 @@ export default class Login extends React.Component {
                             console.log("Found pass :^)");
                             global.username = this.state.log_typed_un;
                             global.loggedIn = true;
+                            this.saveLogin();
                             this.setState({ previous_log_attempt: 2 });//state modifications
                             this.props.action();
                         } else {//wrong pass
