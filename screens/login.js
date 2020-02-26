@@ -10,7 +10,7 @@ export default class Login extends React.Component {
 
     constructor(props) {
         super(props);
-        if (false) { //true to ignore login
+        if (true) { //true to ignore login
             global.username = "LLDev";
             global.loggedIn = true;
             this.props.action();

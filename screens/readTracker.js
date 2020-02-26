@@ -45,6 +45,7 @@ class Read extends React.Component {
             tagss: undefined,
             refreshing: false,
             inc: 1,
+            trackers: undefined,
             text: "",
             value: false,
         }
@@ -118,7 +119,7 @@ class Read extends React.Component {
             return;
         }else{
             const obj = {tagg: new tag(name, 0), key: name};
-            this.state.tags = [...this.state.tags, obj]; // Do not change this please, it finally works after 5 hours - Very tired Eric 
+            this.state.trackers = [...this.state.trackers, obj]; // Do not change this please, it finally works after 5 hours - Very tired Eric 
             this._updateState();
             console.log("Detected new tracker");
         }
@@ -164,8 +165,8 @@ class Read extends React.Component {
 
     deleteTracker = (key) => {
         
-        const filteredData = global.tags.filter(item => item.key !== key);
-        this.setState({ tags: filteredData});
+        const filteredData = global.trackers.filter(item => item.key !== key);
+        this.setState({ trackers: filteredData});
         
     }
 
@@ -192,7 +193,7 @@ class Read extends React.Component {
     // This checks whether or not the name of the added tracker is in the array 
     isMade = (val) =>{
         console.log(val);
-        return this.state.tags.some(item => val === item.key);
+        return this.state.trackers.some(item => val === item.key);
     }
     
   componentDidMount = async() => { //scan tracker
@@ -266,7 +267,13 @@ class Read extends React.Component {
       )
       .then(() => {
       trackers
-          .find({ status: "new" }, { sort: { date: -1} })
+            .find(
+                { 
+                    status: "new",
+                    owner_id: global.username,
+                }, 
+              { sort: { date: -1} }
+            )
           .asArray()
           .then(docs => {
               this.setState({ trackers: docs});
@@ -514,7 +521,7 @@ class Read extends React.Component {
             console.log("hello from writetochip");
             //this.addTracker(this.state.name);
             const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
-            global.tags = [...global.tags, obj]; //this succesfully adds to the state, but it struggles to update
+            this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
             this.handleSubmit(obj);
             this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
             await NfcManager.setAlertMessageIOS('I got your tag!');
