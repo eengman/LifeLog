@@ -88,6 +88,7 @@ class Read extends React.Component {
               date: new Date(),
               goal: 10000, // in write tracker we need to set this
               description: "", // in write tracker we also need to set this
+              owner_id: global.username,
             })
             .then(() => {
               if(1){
@@ -260,7 +261,8 @@ class Read extends React.Component {
       .updateOne(
           { name: name },
           { $set: { count: newCount, logDate: new Date() } },
-          { upsert: true }
+          { upsert: true },
+          {owner_id: global.username}
       )
       .then(() => {
       trackers
@@ -295,7 +297,7 @@ class Read extends React.Component {
           )
           .then(() => {
           trackers
-              .find({ status: "new" }, { sort: { date: -1} })
+              .find({ owner_id: global.username }, { sort: { date: -1} })
               .asArray()
               .then(docs => {
                   this.setState({ trackers: docs});
@@ -323,7 +325,7 @@ class Read extends React.Component {
     const db = mongoClient.db("LifeLog_DB");
     const trackers = db.collection("item");
     trackers 
-      .find({ status: "new" }, { sort: { date: -1} })
+      .find({ owner_id: global.username }, { sort: { date: -1} })
       .asArray()
       .then(docs => {
           this.setState({ trackers: docs });
@@ -375,7 +377,7 @@ class Read extends React.Component {
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
-        
+                        <Text>hello</Text>
 
                     </View>
                     <TouchableOpacity 
@@ -388,6 +390,7 @@ class Read extends React.Component {
 
                 </Modal>
                     <Text>current state is: {this.state.appState}</Text>
+                    <Text> current user: {global.username} </Text>
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}
@@ -480,7 +483,7 @@ class Read extends React.Component {
         const db = mongoClient.db("LifeLog_DB");
         const trackers = db.collection("item");
         trackers 
-          .find({ status: "new" }, { sort: { date: -1} })
+          .find({ owner_id: global.username }, { sort: { date: -1} })
           .asArray()
           .then(docs => {
               this.setState({ trackers: docs });

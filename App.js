@@ -19,6 +19,7 @@ global.username = "";
 global.loggedIn = false;
 
 
+
 export default class App extends React.Component{
 
     constructor(props) {
@@ -31,8 +32,9 @@ export default class App extends React.Component{
             updateVal: true,
             messageShown: false,
         };
+        //global.currentUserId = this.state.currentUserId;
     }
-
+    
     _update() {
         console.log("Updating App.js");
         this.setState({

@@ -1,7 +1,8 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
 import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler } from 'react-native';
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
-import Confetti from "react-native-confetti";
+//import Confetti from "react-native-confetti";
 
 var height = Dimensions.get("window").height;
 
@@ -271,12 +272,7 @@ export default class Login extends React.Component {
 
                 <Modal visible={this.state.register_modal_visible} animationType='slide'>
                     <View style={this.currentRegStyle()}>
-                        <Confetti
-                            confettiCount={50}
-                            timeout={10}
-                            duration={2000}
-                            ref={node => (this._confettiView = node)}
-                        />
+                    
                         <KeyboardAvoidingView behavior="padding" enabled>
                             <TextInput
                                 style={{
