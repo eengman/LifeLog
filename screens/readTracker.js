@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
+import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 
 
@@ -126,6 +127,7 @@ class Read extends React.Component {
     }
 
     trackerOptions = (item) => {
+        const { navigate } = this.props.navigation; // something here isn't working Jacob make it work
         Alert.alert(
             'What would you like to do?',
             '',
@@ -139,8 +141,9 @@ class Read extends React.Component {
                 onPress: () => this.deleteConfirm(item),
                
               },
-              {text: 'See Tracker Details', onPress: () => console.log('OK Pressed')},
-              {}
+              {text: 'See Tracker Details',
+               onPress: () => navigate('about')},
+             
             ],
             {cancelable: false},
           );
