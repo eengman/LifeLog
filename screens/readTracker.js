@@ -86,7 +86,7 @@ class Read extends React.Component {
               key: this.state.name,
               name: this.state.name,
               date: new Date(),
-              goal: 10000, // in write tracker we need to set this
+              goal: this.state.goal, // in write tracker we need to set this
               description: "", // in write tracker we also need to set this
               owner_id: global.username,
             })
@@ -368,8 +368,13 @@ class Read extends React.Component {
                         
                     <View style={{padding: 50}}>
                         <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
+                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name</Text>
                         <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
                             onChangeText={(text) => this.setState({name: text}) }
+                        />
+                           <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Goal</Text>
+                         <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
+                            onChangeText={(text) => this.setState({goal: text}) }
                         />
                         <TouchableOpacity 
                         style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
@@ -398,7 +403,7 @@ class Read extends React.Component {
                             renderItem={({ item }) => (
                                 <View style={styles.tracker}>
                                     <TouchableOpacity onPress={() => this._onPressDelete(item._id)}>
-                                        <Text style={styles.trackerText}>=   {item.name} at {item.count}</Text>
+                                        <Text style={styles.trackerText}>=   {item.name} at {item.count} goal: {item.goal}</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}
