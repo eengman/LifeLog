@@ -398,6 +398,13 @@ class Read extends React.Component {
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
+
+                        <TouchableOpacity //fake tracker
+                        style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
+                        onPress={this.fakeToChip}
+                        >
+                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Fake It</Text>
+                        </TouchableOpacity>
                         
 
                     </View>
@@ -543,16 +550,33 @@ class Read extends React.Component {
           this._cleanUp();
         }
       }
-      // This is also from write tracker page 
-      _cleanUp = () => {
-        NfcManager.cancelTechnologyRequest().catch(() => 0);
-      }//not in use but cancels request
+    
+
+fakeToChip () { //func to write to script
+    
+       
+        //console.warn(resp);
+        
+       // let bytes = buildUrlPayload(this.state.name); //where tag goes in
+        
+       // Alert.alert("Successfully scanned " + '"' + this.state.name + '"');
+        console.log("hello from writetochip");
+        //this.addTracker(this.state.name);
+        const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
+        this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
+        this.handleSubmit(obj);
+        this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
+      
+        this._cleanUp();
+   
+    }
+  
+
+
+
 
 
 }
-
-
-
 const styles = StyleSheet.create({
 
     container: {
