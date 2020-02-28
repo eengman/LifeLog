@@ -23,7 +23,7 @@ global.update = false;
 
 export function masterUpdate(){//why does this not work wtf
     console.log("update main");
-    if(global.update == true){
+    if(global.update === true){
         console.log("Updating App.js");
         App._update();
         App.call(_update());

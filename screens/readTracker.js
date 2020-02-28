@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
@@ -22,6 +22,7 @@ I think part of the problem with it not showing up in the list was because the p
     directly from the writeToChip function. 
 */
 
+global.trackerColor = 'coral';
 
 class Read extends React.Component {
 
@@ -46,7 +47,8 @@ class Read extends React.Component {
             tagss: undefined,
             refreshing: false,
             inc: 1,
-            trackers: undefined,
+            //trackers: undefined,
+            color: '#05878a',
             text: "",
             value: false,
         }
@@ -120,7 +122,7 @@ class Read extends React.Component {
             return;
         }else{
             const obj = {tagg: new tag(name, 0), key: name};
-            this.state.trackers = [...this.state.trackers, obj]; // Do not change this please, it finally works after 5 hours - Very tired Eric 
+            //this.state.trackers = [...this.state.trackers, obj]; // Do not change this please, it finally works after 5 hours - Very tired Eric 
             this._updateState();
             console.log("Detected new tracker");
         }
@@ -274,7 +276,7 @@ class Read extends React.Component {
             .find(
                 { 
                     status: "new",
-                    owner_id: global.username,
+                    //owner_id: global.username,
                 }, 
               { sort: { date: -1} }
             )
@@ -387,6 +389,9 @@ class Read extends React.Component {
                          <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
                             onChangeText={(text) => this.setState({goal: text}) }
                         />
+
+                        
+
                         <TouchableOpacity 
                         style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
@@ -412,8 +417,11 @@ class Read extends React.Component {
                     data={this.state.trackers}
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                             renderItem={({ item }) => (
-                                <View style={styles.tracker}>
-                                    <TouchableOpacity onPress={() => this.trackerOptions(item._id)}>
+                                //<View style={styles.tracker}>
+                                <View style={{borderWidth: 1, backgroundColor: this.state.color, margin: 5, borderColor: '#05878a', padding: 5}}> 
+                                    <TouchableOpacity 
+                                    onPress={() => this.trackerOptions(item._id)}
+                                    >
                                         <Text style={styles.trackerText}>=   {item.name} at {item.count} goal: {item.goal}</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -527,6 +535,7 @@ class Read extends React.Component {
             const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
             this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
             this.handleSubmit(obj);
+            this.setState({ value: !this.state.value});
             this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
             await NfcManager.setAlertMessageIOS('I got your tag!');
             this._cleanUp();
@@ -595,7 +604,8 @@ const styles = StyleSheet.create({
     tracker: {
         borderWidth: 1,
         padding: 5,
-        backgroundColor: '#05878a',
+        //backgroundColor: '#05878a',
+        backgroundColor: global.trackerColor,
         borderRadius: 100,
         margin: 5,
         borderColor: '#05878a',
