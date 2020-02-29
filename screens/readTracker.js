@@ -412,8 +412,8 @@ class Read extends React.Component {
                     </View>
 
                 </Modal>
-                    <Text>current state is: {this.state.appState}</Text>
-                    <Text> current user: {global.username} </Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 20}}> Current State: {this.state.appState}</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 20}}> Current User: {global.username} </Text>
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}
