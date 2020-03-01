@@ -8,6 +8,7 @@ import SettingsStack from './settingsStack';
 const RootDrawerNavigator = createDrawerNavigator({
     Trackers: {
         screen: ReadStack,
+        
     },
     Settings:{
         screen: SettingsStack,
