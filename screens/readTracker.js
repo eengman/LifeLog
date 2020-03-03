@@ -537,31 +537,7 @@ class Read extends React.Component {
       _cleanUp = () => {
         NfcManager.cancelTechnologyRequest().catch(() => 0);
       }//not in use but cancels request
-    
-
-fakeToChip () { //func to write to script
-    
-       
-        //console.warn(resp);
-        
-       // let bytes = buildUrlPayload(this.state.name); //where tag goes in
-        
-       // Alert.alert("Successfully scanned " + '"' + this.state.name + '"');
-        console.log("hello from writetochip");
-        //this.addTracker(this.state.name);
-        const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
-        this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
-        this.handleSubmit(obj);
-        this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
       
-        this._cleanUp();
-   
-    }
-  
-
-
-
-
 
 }
 const styles = StyleSheet.create({
