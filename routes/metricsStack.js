@@ -18,7 +18,7 @@ const screens = {
     },
 }
 
-    
+
 
 const MetricsStack = createStackNavigator(screens, {
     defaultNavigationOptions: {

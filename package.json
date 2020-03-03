@@ -10,19 +10,28 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.8.0",
     "@react-native-community/masked-view": "^0.1.6",
+    "@react-navigation/drawer": "^5.0.7",
+    "async-storage": "^0.1.0",
     "formik": "^2.1.4",
+    "moment": "^2.24.0",
+    "mongodb": "^3.5.3",
+    "mongodb-stitch-react-native-sdk": "^4.8.0",
     "react": "16.9.0",
     "react-native": "0.61.5",
-    "react-native-gesture-handler": "^1.6.0",
+    "react-native-confetti": "^0.1.0",
+    "react-native-gesture-handler": "^1.5.3",
     "react-native-nfc-manager": "^2.1.1",
     "react-native-progress-bar-animated": "^1.0.6",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.4",
     "react-native-screens": "^2.0.0-alpha.32",
-    "react-navigation": "^4.1.1",
+    "react-native-swipeout": "^2.3.6",
+    "react-navigation": "^4.1.0",
     "react-navigation-drawer": "^2.3.3",
-    "react-navigation-stack": "^2.0.16"
+    "react-navigation-stack": "^2.0.16",
+    "util": "^0.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

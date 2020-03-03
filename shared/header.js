@@ -1,8 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
-//import { Icon } from 'react-native-elements';
-
 export default function Header({ navigation, title }) {
 
     const openMenu = () => {
@@ -11,7 +9,7 @@ export default function Header({ navigation, title }) {
 
     return(
         <View style={styles.header}>
-            <Button color='coral' title='||||' onPress={openMenu} />
+            <Button color='#074e67' title='||||' onPress={openMenu} />
             <View>
                 <Text style={styles.headerText}>{ title }</Text>
             </View>
@@ -25,13 +23,13 @@ const styles = StyleSheet.create({
         height: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     headerText: {
         fontWeight: 'bold',
         fontSize: 26,
         color: 'white',
         letterSpacing: 3,
-        padding: 24,
+        padding: 24
     },
 });

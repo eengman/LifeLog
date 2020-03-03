@@ -7,12 +7,10 @@ import {
   Alert,
   Text,
 } from 'react-native';
+import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
 //var value =
 var incPercent = 100 / 3;
- 
-import ProgressBarAnimated from 'react-native-progress-bar-animated';
- 
 export default class App extends React.Component {
  
   state = {
@@ -20,7 +18,7 @@ export default class App extends React.Component {
     epicProgress: 0,
     progressCustomized: 0,
   }
- 
+  
   increase = (key, value) => {
     this.setState({
       [key]: this.state[key] + value,
@@ -34,6 +32,23 @@ export default class App extends React.Component {
       borderRadius: 0,
       borderColor: 'orange',
     };
+
+    _updateProgress = () => {
+      const thing = this.props.navigation.getParams('thing');
+      this.setState({ refreshing: true });
+      const stitchAppClient = Stitch.defaultAppClient;
+      const mongoClient = stitchAppClient.getServiceClient(
+          RemoteMongoClient.factory,
+          "mongodb-atlas"
+      );
+      const db = mongoClient.db("LifeLog_DB");
+      const trackers = db.collection("item");
+      var current = trackers.find({ owner_id: thing })
+        .catch(err => {
+            console.warn(err);
+        });
+        incPercent = current.goal;
+      };
  
     return (
       <View style={styles.container}>
@@ -56,26 +71,7 @@ export default class App extends React.Component {
             </View>
           </View>
         </View>
-        <View style={styles.separator} />
-        <View>
-          <Text style={styles.label}>Epicness</Text>
-          <ProgressBarAnimated
-            width={barWidth}
-            value={this.state.epicProgress}
-            backgroundColorOnComplete="#6CC644"
-            onComplete={() => {
-              Alert.alert('Hey!', 'onComplete event fired!');
-            }}
-          />
-          <View style={styles.buttonContainer}>
-            <View style={styles.buttonInner}>
-              <Button
-                title="Progress"
-                onPress={this.increase.bind(this, 'epicProgress', incPercent)}
-              />
-            </View>
-          </View>
-        </View>
+        
         
       </View>
 

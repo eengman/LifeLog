@@ -1,9 +1,9 @@
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable prettier/prettier */
 import { createStackNavigator } from 'react-navigation-stack';
-import Read from '../screens/readTracker';
-import Metrics from '../screens/Metrics';
+import Read from '../screens/Settings';
 import Header from '../shared/header';
+import login from '../screens/login';
 import React from 'react';
 
 const screens = {
@@ -11,16 +11,16 @@ const screens = {
         screen: Read,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='My Trackers' />,
+                headerTitle: () => <Header navigation={navigation} title='Settings'/>,
             }
         } 
-    }, 
+    },
 
-    Metrics: {
-        screen: Metrics,
+    Login: {
+        screen: login,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='Tracker Statistics' />,
+                headerTitle: () => <Header navigation={navigation} title='Login' />,
             }
         } 
     },
