@@ -2,6 +2,7 @@
 /* eslint-disable prettier/prettier */
 import { createStackNavigator } from 'react-navigation-stack';
 import Read from '../screens/readTracker';
+import Metrics from '../screens/Metrics';
 import Header from '../shared/header';
 import React from 'react';
 
@@ -10,7 +11,16 @@ const screens = {
         screen: Read,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='MY TRACKERS'/>,
+                headerTitle: () => <Header navigation={navigation} title='My Trackers' />,
+            }
+        } 
+    }, 
+
+    Metrics: {
+        screen: Metrics,
+        navigationOptions: ({ navigation }) => {
+            return {
+                headerTitle: () => <Header navigation={navigation} title='Tracker Statistics' />,
             }
         } 
     },

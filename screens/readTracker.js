@@ -5,6 +5,7 @@ import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
+import { StackNavigator } from 'react-navigation';
 
 
 function buildUrlPayload(valueToWrite) {
@@ -142,7 +143,7 @@ class Read extends React.Component {
                
               },
               {text: 'See Tracker Details',
-               onPress: () => navigate('about')},
+              onPress: () => navigate("Metrics", {screen: "Metrics", tracker: item})},
              
             ],
             {cancelable: false},
@@ -406,7 +407,7 @@ class Read extends React.Component {
 
                 </Modal>
                     <Text>current state is: {this.state.appState}</Text>
-                    <Text> current user: {global.username} </Text>
+                    <Text>current user: {global.username} </Text>  
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}
