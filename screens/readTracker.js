@@ -166,13 +166,6 @@ class Read extends React.Component {
             {cancelable: false},
           );
     }
-/*
-    deleteTracker = (key) => {
-        
-        const filteredData = global.trackers.filter(item => item.key !== key);
-        this.setState({ trackers: filteredData});
-        
-    }*/
 
 
     test(){// what is this for - Dylan
@@ -412,8 +405,8 @@ class Read extends React.Component {
                     </View>
 
                 </Modal>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}> Current State: {this.state.appState}</Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}> Current User: {global.username} </Text>
+                    <Text>current state is: {this.state.appState}</Text>
+                    <Text> current user: {global.username} </Text>
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}
@@ -541,6 +534,9 @@ class Read extends React.Component {
           this._cleanUp();
         }
       }
+      _cleanUp = () => {
+        NfcManager.cancelTechnologyRequest().catch(() => 0);
+      }//not in use but cancels request
     
 
 fakeToChip () { //func to write to script
