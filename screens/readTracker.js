@@ -377,6 +377,7 @@ class Read extends React.Component {
     console.log("progress: " + item.progress);
     let deviceWidth = Dimensions.get('window').width;
     
+    
     return(
     
     <View>
@@ -406,7 +407,7 @@ class Read extends React.Component {
 
         <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 15, marginBottom: 10, width: '100%', justifyContent: 'center', borderColor: item.color}}>
             
-            <View style={{backgroundColor: item.color, width: item.progress + '%', height: 15, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
+            <View style={{backgroundColor: item.color, width: item.progress+1 + '%', height: 15, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
             </View>
         </View>
 
