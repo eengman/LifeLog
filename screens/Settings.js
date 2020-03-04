@@ -25,13 +25,11 @@ export default class Login extends React.Component {
 
     render() {
         return (
-            <View>
-                 <TouchableOpacity 
-                    style={styles.simple}
-                    onPress={() => this.logoutPressed()}
-                    >
-                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>Log Out</Text>
-                    </TouchableOpacity> 
+            <View style={styles.simple}>
+                <Button
+                    title= "logout"
+                    onPress={()=>this.logoutPressed()}
+                />
             </View>
         );
     }
@@ -44,6 +42,8 @@ export default class Login extends React.Component {
             global.loggedIn= false;
             global.update = true;
             masterUpdate();
+
+            
             console.log("logout complete...");
         } catch (e) {
             // saving error
@@ -55,13 +55,17 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
     simple: {
         width: '100%',
-        backgroundColor: "#074e67",
-        borderColor: "#074e67",
-        alignItems: "center",
-        marginTop: '123%',
-        padding: 10,
-        borderWidth: 2, 
-        alignSelf: 'center'
+        backgroundColor: "#fff",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    container: {
+        flex: 1,
+        width: '100%',
+        backgroundColor: "#fff",
+        justifyContent: "center",
+        alignItems: "center"
+
     },
     containerRed: {
         flex: 1,

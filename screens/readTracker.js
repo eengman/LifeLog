@@ -5,6 +5,7 @@ import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
+import { StackNavigator } from 'react-navigation';
 
 
 function buildUrlPayload(valueToWrite) {
@@ -144,7 +145,7 @@ class Read extends React.Component {
                
               },
               {text: 'See Tracker Details',
-               onPress: () => navigate('about')},
+              onPress: () => navigate("Metrics", {screen: "Metrics", tracker: item})},
              
             ],
             {cancelable: false},
@@ -168,13 +169,6 @@ class Read extends React.Component {
             {cancelable: false},
           );
     }
-/*
-    deleteTracker = (key) => {
-        
-        const filteredData = global.trackers.filter(item => item.key !== key);
-        this.setState({ trackers: filteredData});
-        
-    }*/
 
 
     test(){// what is this for - Dylan
@@ -417,8 +411,8 @@ class Read extends React.Component {
                     </View>
 
                 </Modal>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}> Current State: {this.state.appState}</Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 20}}> Current User: {global.username} </Text>
+                    <Text>current state is: {this.state.appState}</Text>
+                    <Text>current user: {global.username} </Text>  
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}
@@ -550,31 +544,10 @@ class Read extends React.Component {
           this._cleanUp();
         }
       }
-    
-
-fakeToChip () { //func to write to script
-    
-       
-        //console.warn(resp);
-        
-       // let bytes = buildUrlPayload(this.state.name); //where tag goes in
-        
-       // Alert.alert("Successfully scanned " + '"' + this.state.name + '"');
-        console.log("hello from writetochip");
-        //this.addTracker(this.state.name);
-        const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
-        this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
-        this.handleSubmit(obj);
-        this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
+      _cleanUp = () => {
+        NfcManager.cancelTechnologyRequest().catch(() => 0);
+      }//not in use but cancels request
       
-        this._cleanUp();
-   
-    }
-  
-
-
-
-
 
 }
 const styles = StyleSheet.create({
