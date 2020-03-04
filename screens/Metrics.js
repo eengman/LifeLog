@@ -49,10 +49,11 @@ export default class App extends React.Component {
       );
       const db = mongoClient.db("LifeLog_DB");
       const trackers = db.collection("item");
-      var current = trackers.findOne({_id: id})
+      var current;
+      trackers.findOne({_id: id})
       .then(item => {
-       current = item.goal
-       console.log(item.name)
+       current = item
+       console.log(item)
        return(item)
       })
       .catch(err => {
