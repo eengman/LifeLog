@@ -8,10 +8,12 @@ import {
   Alert,
   Text,
 } from 'react-native';
-import ProgressBarAnimated from 'react-native-progress-bar-animated';
+//import ProgressBarAnimated from 'react-native-progress-bar-animated';
+import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 
 //var value =
 var incPercent = 100 / 3;
+const barWidth = Dimensions.get('screen').width - 30;
 export default class App extends React.Component {
  
   state = {
@@ -25,36 +27,37 @@ export default class App extends React.Component {
       [key]: this.state[key] + value,
     });
   }
+  
+  _updateProgress(){
+    const tracker = this.props.navigation.getParam('tracker', 'nothing received');
+    this.setState({ refreshing: true });
+    const stitchAppClient = Stitch.defaultAppClient;
+    const mongoClient = stitchAppClient.getServiceClient(
+        RemoteMongoClient.factory,
+        "mongodb-atlas"
+    );
+    const db = mongoClient.db("LifeLog_DB");
+    const trackers = db.collection("item");
+    var currentDay = trackers.find({ _id: tracker })
+   
+    
+      //.catch(err => {
+         // console.warn(err);
+      //});
+     
+      //incPercent = current.goal;
+  }
  
   render() {
 
-    const barWidth = Dimensions.get('screen').width - 30;
-    const progressCustomStyles = {
-      backgroundColor: 'red', 
-      borderRadius: 0,
-      borderColor: 'orange',
-    };
-
-    _updateProgress = () => {
-      const tracker = this.props.navigation.getParam('tracker', 'nothing received');
-      this.setState({ refreshing: true });
-      const stitchAppClient = Stitch.defaultAppClient;
-      const mongoClient = stitchAppClient.getServiceClient(
-          RemoteMongoClient.factory,
-          "mongodb-atlas"
-      );
-      const db = mongoClient.db("LifeLog_DB");
-      const trackers = db.collection("item");
-      var currentDay = trackers.find({ _id: tracker })
-     
-      
-        .catch(err => {
-            console.warn(err);
-        });
-       
-        incPercent = current.goal;
-      };
- 
+    //const barWidth = Dimensions.get('screen').width - 30;
+    //const progressCustomStyles = {
+      //backgroundColor: 'red', 
+      //borderRadius: 0,
+      //borderColor: 'orange',
+    //}
+    
+    
     return (
       <View style={styles.container}>
         <View>

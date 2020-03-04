@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker } from 'react-native';
@@ -372,36 +373,52 @@ class Read extends React.Component {
                 
                 <Modal visible={this.state.modalVisible} animationType='slide'>
                     <View style ={styles.modalContent}>
+                    
                         
                     <View style={{padding: 50}}>
                         <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
                         <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name</Text>
-                        <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
+                        <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
                            <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Goal</Text>
-                         <TextInput style={{height: 80, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
+                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
                             onChangeText={(text) => this.setState({goal: text}) }
                         />
 
+                        <View style={{flexDirection: 'row', padding: 50}}>
+                            <Text style={{fontWeight: 'bold'}}>Color: </Text>
+                            <Picker 
+                                selectedValue={this.state.color}
+                                style={{height: 50, width: 100}}
+                                onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}>
+                                <Picker.Item label="Blue" value="#05878a" />
+                                <Picker.Item label="Red" value="red" />
+                            </Picker>
+                            <TouchableOpacity style={{padding: 10, width: '50%', backgroundColor: this.state.color}}>
+
+                            </TouchableOpacity>
+                        </View>
                         
 
                         <TouchableOpacity 
-                        style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
+                        style={{padding: 10, width: '100%', margin: 0, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
                         >
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
-
+                        
                         <TouchableOpacity //fake tracker
                         style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
-                        onPress={this.fakeToChip}
+                        onPress={() => this.setModalVisible(false)}
                         >
-                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Fake It</Text>
+                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Cancel</Text>
                         </TouchableOpacity>
                         
 
+
                     </View>
+                        
                     <TouchableOpacity 
                     style={{padding: 10, width: '100%' , marginTop: '48%', margin: 20,  borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
                     onPress={() => this.setModalVisible(false)}
