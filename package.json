@@ -23,6 +23,7 @@
     "react-native-confetti": "^0.1.0",
     "react-native-gesture-handler": "^1.5.3",
     "react-native-nfc-manager": "^2.1.1",
+    "react-native-paper": "^3.6.0",
     "react-native-progress-bar-animated": "^1.0.6",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.4",

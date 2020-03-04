@@ -1,12 +1,15 @@
+/* eslint-disable react/self-closing-comp */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 import { StackNavigator } from 'react-navigation';
+//import {ListItem} from 'react-native-elements';
+//import { ProgressBar } from 'react-native-paper';
 
 
 function buildUrlPayload(valueToWrite) {
@@ -39,6 +42,7 @@ class Read extends React.Component {
             tags: global.tags,      // Global tags is now global and local for this js page - Eric
             count: 0,
             goal: 0,
+            //progress: 1,
             test: 'default',
             name: props.item,
             miraculous_something: true, //helpfulvar to update state
@@ -49,7 +53,9 @@ class Read extends React.Component {
             tagss: undefined,
             refreshing: false,
             inc: 1,
-            //trackers: undefined,
+            array: undefined,
+            trackers: [],
+            //array: undefined,
             color: '#05878a',
             text: "",
             value: false,
@@ -76,6 +82,7 @@ class Read extends React.Component {
 
     handleSubmit = (obj) => {
         Keyboard.dismiss();
+        console.log("submitting");
         const stitchAppClient = Stitch.defaultAppClient;
         const mongoClient = stitchAppClient.getServiceClient(
           RemoteMongoClient.factory,
@@ -96,14 +103,17 @@ class Read extends React.Component {
               description: "", // in write tracker we also need to set this
               owner_id: global.username,
               color: this.state.color,
+              progress: 0,
             })
-            .then(() => {
+            .then(docs => {
               if(1){
                 // put confetti here if we want it
               }
               this.setState({ value: !this.state.value});
               this.setState({ text: ""});
-              //this._updateState();
+              //this.setState({ trackers: docs});  // changed from trackers
+              this.setState({array: trackers})  // array test
+              this._updateState();
             })
             .catch(err => {
               console.warn(err);
@@ -238,10 +248,11 @@ class Read extends React.Component {
             console.log('not made');
          */   
         }
-        this.state.trackers.map((this_tag) => {    
+        this.state.trackers.map((this_tag) => {    // changed from trackers
             if (this.state.parsedText === this_tag.name) {
                 this_tag.count = this_tag.count + 1;
-                this._onPressComplete(this_tag.count, this.state.parsedText);
+                console.log("Tracker goal: " + this_tag.goal);
+                this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal);
                 //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
             }
@@ -252,7 +263,7 @@ class Read extends React.Component {
     });
   }
 
-  _onPressComplete(newCount, name){
+  _onPressComplete(newCount, name, goal){
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
       RemoteMongoClient.factory,
@@ -260,10 +271,12 @@ class Read extends React.Component {
     );
     const db = mongoClient.db("LifeLog_DB");
     const trackers = db.collection("item");
+    //const goal = trackers.goal;
+    console.log("Goal is: " + goal);
     trackers 
       .updateOne(
           { name: name },
-          { $set: { count: newCount, logDate: new Date() } },
+          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal } },
           { upsert: true },
           {owner_id: global.username}
       )
@@ -272,13 +285,16 @@ class Read extends React.Component {
             .find(
                 { 
                     status: "new",
-                    //owner_id: global.username,
+                    owner_id: global.username,
                 }, 
               { sort: { date: -1} }
             )
           .asArray()
           .then(docs => {
-              this.setState({ trackers: docs});
+              this.setState({ trackers: docs});  // changed from tracker
+              this.setState({ array: trackers});    // array test
+              this._updateState();
+              //this.setState({ count: newCount});
               if (this._confettiView){
                   this._confettiView.startConfetti();
               }
@@ -309,7 +325,9 @@ class Read extends React.Component {
               .find({ owner_id: global.username }, { sort: { date: -1} })
               .asArray()
               .then(docs => {
-                  this.setState({ trackers: docs});
+                  this.setState({ trackers: docs});  // changed from trackers
+                  this.setState({ array: trackers});    // array test
+                  this._updateState();
                   if (this._confettiView){
                       this._confettiView.startConfetti();
                   }
@@ -337,8 +355,10 @@ class Read extends React.Component {
       .find({ owner_id: global.username }, { sort: { date: -1} })
       .asArray()
       .then(docs => {
-          this.setState({ trackers: docs });
+          this.setState({ trackers: docs }); // changed from trackers
           this.setState({ refreshing: false});
+          this.setState({ array: trackers});    // array test
+          this._updateState(); // added for bug fixing
       })
       .catch(err => {
           console.warn(err);
@@ -351,11 +371,56 @@ class Read extends React.Component {
     NfcManager.unregisterTagEvent().catch(() => 0);
   }
 
+  renderItem = ({item}) => {
+
+    console.log(item.count);
+    console.log("progress: " + item.progress);
+    let deviceWidth = Dimensions.get('window').width;
+    
+    return(
+    
+    <View>
+        <View style={{flexDirection: 'row', padding: 5}}>
+
+            <View style={{backgroundColor: item.color, width: 30, height: 50}}>
+                
+            </View>
+
+            <TouchableOpacity 
+            style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: item.color, height: 50}}
+            onPress={() => this.trackerOptions(item._id)}
+            >
+
+                <Text style={{ fontSize: 20, alignSelf: 'flex-start', marginLeft: 20, color: 'black'}}>
+                    {item.name}
+                </Text>
+                
+            </TouchableOpacity>
+
+            <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderRightWidth: 2, borderColor: item.color, height: 50, padding: 10}}>
+                <Text style={{fontSize: 18}}>{item.count} / {item.goal}</Text>
+            </View>
+
+        
+        </View>
+
+        <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 15, marginBottom: 10, width: '100%', justifyContent: 'center', borderColor: item.color}}>
+            
+            <View style={{backgroundColor: item.color, width: item.progress + '%', height: 15, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
+            </View>
+        </View>
+
+    </View>
+    )
+    
+    
+    }
+
 
     render() {
         // This is for navigating to add tracker screen  DONT NEED BUT KEEP IN CASE WE WANT TO NAVIGATE TO ANOTHER SCREEN FROM HERE IN FUTURE 
         //const { navigate } = this.props.navigation;
-
+        /*
         const sections = 
             this.state.trackers == undefined 
             ? [{ data: [{ title: "Loading..." }], title: "Loading..." }]
@@ -367,7 +432,7 @@ class Read extends React.Component {
                     title: "No new tasks"
                 }
               ];
-        
+        */
         return (
 
         <View style={styles.container}>
@@ -392,9 +457,17 @@ class Read extends React.Component {
                             <Picker 
                                 selectedValue={this.state.color}
                                 style={{height: 50, width: 100}}
-                                onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}>
-                                <Picker.Item label="Blue" value="#05878a" />
-                                <Picker.Item label="Red" value="red" />
+                                onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}
+                                >
+                                <Picker.Item label="Turquiose" value="#05878a" color="#05878a" />
+                                <Picker.Item label="Pink" value="#f5b7b1" color="#f5b7b1" />
+                                <Picker.Item label="Purple" value="#d7bde2" color="#d7bde2"/>
+                                <Picker.Item label="Blue" value="#a9cce3" color="#a9cce3"/>
+                                <Picker.Item label="Green" value="#a3e4d7" color="#a3e4d7"/>
+                                <Picker.Item label="Yellow" value="#f9e79f" color="#f9e79f"/>
+                                <Picker.Item label="Orange" value="#edbb99" color="#edbb99"/>
+                                <Picker.Item label="Grey" value="#aeb6bf" color="#aeb6bf"/>
+
                             </Picker>
                             <TouchableOpacity style={{padding: 10, width: '50%', backgroundColor: this.state.color}}>
 
@@ -429,15 +502,20 @@ class Read extends React.Component {
                     </View>
 
                 </Modal>
+                    {/*
                     <Text>current state is: {this.state.appState}</Text>
                     <Text>current user: {global.username} </Text>  
+                    */}
                 <FlatList
                     style={{padding: 10}}
-                    data={this.state.trackers}
+                    data={this.state.trackers}   // changed from trackers
+                    extraData={this.state}
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
+                    renderItem={this.renderItem}
+                            /*
                             renderItem={({ item }) => (
                                 //<View style={styles.tracker}>
-                                <View style={{borderWidth: 1, backgroundColor: item.color, margin: 5, borderColor: '#05878a', padding: 5}}> 
+                                <View style={{borderWidth: 1, backgroundColor: item.color, margin: 5, borderColor: item.color, padding: 5}}> 
                                     <TouchableOpacity 
                                     onPress={() => this.trackerOptions(item._id)}
                                     >
@@ -445,6 +523,7 @@ class Read extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                             )}
+                            */
                         />
 
               {/* <View style={styles.buttoncontain}>
@@ -529,8 +608,11 @@ class Read extends React.Component {
           .find({ owner_id: global.username }, { sort: { date: -1} })
           .asArray()
           .then(docs => {
-              this.setState({ trackers: docs });
+              this.setState({ trackers: docs }); // changed from trackers
               this.setState({ refreshing: false});
+              //this.setState({ array: trackers});
+              this._updateState();
+              //this.setState({ array: trackers});
           })
           .catch(err => {
               console.warn(err);
@@ -552,9 +634,9 @@ class Read extends React.Component {
             console.log("hello from writetochip");
             //this.addTracker(this.state.name);
             const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
-            this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
+            //this.setState({ trackers: [...global.tags, obj]}); //this succesfully adds to the state, but it struggles to update
             this.handleSubmit(obj);
-            this.setState({ value: !this.state.value});
+            //this.setState({ value: !this.state.value});
             this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
             await NfcManager.setAlertMessageIOS('I got your tag!');
             this._cleanUp();

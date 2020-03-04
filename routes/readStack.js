@@ -30,7 +30,7 @@ const screens = {
 
 const ReadStack = createStackNavigator(screens, {
     defaultNavigationOptions: {
-        headerStyle: { backgroundColor: '#074e67', height: 70 }
+        headerStyle: { backgroundColor: '#074e67', height: 70 } // original background color "#074e67"
     }
 });
 
