@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
   Text,
+  PointPropType,
 } from 'react-native';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
@@ -17,13 +18,17 @@ export default class App extends React.Component {
   state = {
     progress: 0,
     epicProgress: 0,
-    progressCustomized: 0,
   }
   
   increase = (key, value) => {
     this.setState({
       [key]: this.state[key] + value,
     });
+  }
+
+  querryFunction(querry){
+    console.log("in function");
+    console.log(querry);
   }
  
   render() {
@@ -44,15 +49,24 @@ export default class App extends React.Component {
       );
       const db = mongoClient.db("LifeLog_DB");
       const trackers = db.collection("item");
-      var current = trackers.findOne({ name: id });
-      var name = current.name;
-      incPercent = current.goal;
+      var current = trackers.findOne({_id: id})
+      .then(item => {
+       current = item.goal
+       console.log(item.name)
+       return(item)
+      })
+      .catch(err => {
+      console.error(err)
+      })
+      //incPercent = current.goal;
+      console.log(current);
+
       
  
     return (
       <View style={styles.container}>
         <View>
-          <Text style={styles.label}>{name}</Text>
+          <Text style={styles.label}>epicProgress</Text>
           <ProgressBarAnimated
             width={barWidth}
             value={this.state.epicProgress}
@@ -64,8 +78,8 @@ export default class App extends React.Component {
           <View style={styles.buttonContainer}>
             <View style={styles.buttonInner}>
               <Button
-                title= {'current.name'}
-                onPress={this.increase.bind('','epicProgress', incPercent)}
+                title= "epicProgress"
+                onPress={this.increase.bind(this,'epicProgress', incPercent)}
               />
             </View>
           </View>
