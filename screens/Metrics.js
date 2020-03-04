@@ -8,8 +8,9 @@ import {
   Text,
 } from 'react-native';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
+import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 
-//var value =
+
 var incPercent = 100 / 3;
 export default class App extends React.Component {
  
@@ -33,9 +34,9 @@ export default class App extends React.Component {
       borderColor: 'orange',
     };
 
-    _updateProgress = () => {
-      const thing = this.props.navigation.getParams('thing');
-      this.setState({ refreshing: true });
+   
+      const id = this.props.navigation.getParam('id');
+      //this.setState({ refreshing: true });
       const stitchAppClient = Stitch.defaultAppClient;
       const mongoClient = stitchAppClient.getServiceClient(
           RemoteMongoClient.factory,
@@ -43,17 +44,15 @@ export default class App extends React.Component {
       );
       const db = mongoClient.db("LifeLog_DB");
       const trackers = db.collection("item");
-      var current = trackers.find({ owner_id: thing })
-        .catch(err => {
-            console.warn(err);
-        });
-        incPercent = current.goal;
-      };
+      var current = trackers.findOne({ name: id });
+      var name = current.name;
+      incPercent = current.goal;
+      
  
     return (
       <View style={styles.container}>
         <View>
-          <Text style={styles.label}>Epic</Text>
+          <Text style={styles.label}>{name}</Text>
           <ProgressBarAnimated
             width={barWidth}
             value={this.state.epicProgress}
@@ -65,7 +64,7 @@ export default class App extends React.Component {
           <View style={styles.buttonContainer}>
             <View style={styles.buttonInner}>
               <Button
-                title="Progress"
+                title= {'current.name'}
                 onPress={this.increase.bind('','epicProgress', incPercent)}
               />
             </View>

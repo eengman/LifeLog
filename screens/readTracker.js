@@ -147,7 +147,7 @@ class Read extends React.Component {
                
               },
               {text: 'See Tracker Details',
-               onPress: () => navigate("Metrics", {screen: "Metrics", thing: this._id})},
+               onPress: () => navigate("Metrics", {screen: "Metrics", id: item})},
              
             ],
             {cancelable: false},
