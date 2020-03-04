@@ -95,6 +95,7 @@ class Read extends React.Component {
               goal: this.state.goal, // in write tracker we need to set this
               description: "", // in write tracker we also need to set this
               owner_id: global.username,
+              color: this.state.color,
             })
             .then(() => {
               if(1){
@@ -378,11 +379,11 @@ class Read extends React.Component {
                     <View style={{padding: 50}}>
                         <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
                         <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name</Text>
-                        <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
+                        <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
                            <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Goal</Text>
-                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 30}} 
+                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({goal: text}) }
                         />
 
@@ -436,7 +437,7 @@ class Read extends React.Component {
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                             renderItem={({ item }) => (
                                 //<View style={styles.tracker}>
-                                <View style={{borderWidth: 1, backgroundColor: this.state.color, margin: 5, borderColor: '#05878a', padding: 5}}> 
+                                <View style={{borderWidth: 1, backgroundColor: item.color, margin: 5, borderColor: '#05878a', padding: 5}}> 
                                     <TouchableOpacity 
                                     onPress={() => this.trackerOptions(item._id)}
                                     >
