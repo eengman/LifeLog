@@ -11,7 +11,7 @@ const screens = {
         screen: Read,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='My Trackers' />,
+                headerTitle: () => <Header navigation={navigation} title='Home' />,
             }
         } 
     }, 

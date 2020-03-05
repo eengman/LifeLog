@@ -8,8 +8,30 @@ import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 import { StackNavigator } from 'react-navigation';
+import { Divider, Card, Icon } from 'react-native-elements';
+import  PureChart  from 'react-native-pure-chart';
+
 //import {ListItem} from 'react-native-elements';
 //import { ProgressBar } from 'react-native-paper';
+
+//var totalLogs = 0;
+var totalLogs = 0;
+
+let sampleData = [
+    {
+        data:[
+            {x: 'Feb 2', y: 10},
+            {x: 'Feb 3', y: 17},
+            {x: 'Feb 4', y: 4},
+            {x: 'Feb 2', y: 10},
+            {x: 'Feb 3', y: 17},
+            {x: 'Feb 4', y: 4}
+        ],
+        color: '#074e67'
+    },
+];
+
+
 
 
 function buildUrlPayload(valueToWrite) {
@@ -59,6 +81,7 @@ class Read extends React.Component {
             color: '#05878a',
             text: "",
             value: false,
+            totalCalcuation: 0,
         }
         this._loadClient = this._loadClient.bind(this);
     }
@@ -111,9 +134,9 @@ class Read extends React.Component {
               }
               this.setState({ value: !this.state.value});
               this.setState({ text: ""});
-              //this.setState({ trackers: docs});  // changed from trackers
-              this.setState({array: trackers})  // array test
-              this._updateState();
+              this.setState({ trackers: docs});  // changed from trackers
+              //this.setState({array: trackers})  // array test
+              //this._updateState();
             })
             .catch(err => {
               console.warn(err);
@@ -191,16 +214,16 @@ class Read extends React.Component {
     _updateState() {
         console.log("updating state");
         this.setState({ miraculous_something: false });
-        global.recently = "readTracker.js";
+        //global.recently = "readTracker.js";
         this.setState({ miraculous_something: true });
-        this.render; //why does this stuff only work sometimes wtf
-        return;
+        //this.render; //why does this stuff only work sometimes wtf
+        //return;
     }
 
     tagInc = (props) => {
         console.log("inc ", props.tagg.state.name, " to 1+", props.tagg.state.count);
         props.tagg.state.count = props.tagg.state.count + 1;
-        this._updateState();
+        //this._updateState();
     }
     // This checks whether or not the name of the added tracker is in the array 
     isMade = (val) =>{
@@ -210,7 +233,7 @@ class Read extends React.Component {
     
   componentDidMount = async() => { //scan tracker
     this._loadClient();
-    AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
+    //AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
     try {
         await NfcManager.registerTagEvent()
     } catch (ex) {
@@ -225,28 +248,7 @@ class Read extends React.Component {
         
         // This checks to see if new tracker is in array yet, if not then it makes it
         if(this.isMade(this.state.parsedText) === false){   // this if statement checks to see if the tracker is part of the list. If unknown, then it prompts if user would like to add to it
-            // THIS STUFF DOESNT WORK RIGHT SINCE WE NOW PULL FROM THE DATABASE AND THIS IS CHECKING THE GLOBAL TAGS
-            // HOWEVER ITS STILL USEFUL 
-
-            //this.addTracker(this.state.parsedText);
-            /*
-            Alert.alert(        
-                'The tracker ' + "'" + this.state.parsedText + "'" + ' is not one of your trackers',
-                'Would you like to add this to your current trackers?',
-                [
-                  {text: 'Cancel',
-                   onPress: () => console.log('Ask me later pressed'),
-                   style: 'cancel'
-                  },
-                  {
-                    text: 'Add',
-                    onPress: () => this.addTracker(this.state.parsedText),
-                  },
-                ],
-                {cancelable: false},
-              );
-            console.log('not made');
-         */   
+            
         }
         this.state.trackers.map((this_tag) => {    // changed from trackers
             if (this.state.parsedText === this_tag.name) {
@@ -292,8 +294,8 @@ class Read extends React.Component {
           .asArray()
           .then(docs => {
               this.setState({ trackers: docs});  // changed from tracker
-              this.setState({ array: trackers});    // array test
-              this._updateState();
+              //this.setState({ array: trackers});    // array test
+              //this._updateState();
               //this.setState({ count: newCount});
               if (this._confettiView){
                   this._confettiView.startConfetti();
@@ -326,7 +328,7 @@ class Read extends React.Component {
               .asArray()
               .then(docs => {
                   this.setState({ trackers: docs});  // changed from trackers
-                  this.setState({ array: trackers});    // array test
+                  //this.setState({ array: trackers});    // array test
                   this._updateState();
                   if (this._confettiView){
                       this._confettiView.startConfetti();
@@ -344,6 +346,7 @@ class Read extends React.Component {
      // Refresh shit  
   _onRefresh = () => {
     this.setState({ refreshing: true });
+    //global.totalLogs = 0;
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
         RemoteMongoClient.factory,
@@ -355,10 +358,11 @@ class Read extends React.Component {
       .find({ owner_id: global.username }, { sort: { date: -1} })
       .asArray()
       .then(docs => {
-          this.setState({ trackers: docs }); // changed from trackers
+          this.setState({ trackers: docs}); // changed from trackers
           this.setState({ refreshing: false});
-          this.setState({ array: trackers});    // array test
-          this._updateState(); // added for bug fixing
+          //this.setState({ array: trackers});    // array test
+          //this._updateState(); // added for bug fixing
+        
       })
       .catch(err => {
           console.warn(err);
@@ -366,16 +370,23 @@ class Read extends React.Component {
     };
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
+    //AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
     NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
     NfcManager.unregisterTagEvent().catch(() => 0);
   }
+  
 
   renderItem = ({item}) => {
 
-    console.log(item.count);
-    console.log("progress: " + item.progress);
-    let deviceWidth = Dimensions.get('window').width;
+    //console.log(item.count);
+    //console.log("progress: " + item.progress);
+    //let deviceWidth = Dimensions.get('window').width;
+    
+    if(item.owner_id === global.username){
+        totalLogs += item.count;
+    }
+    console.log("Total logs: " + totalLogs);
+    //console.log(item.owner_id);
     
     
     return(
@@ -383,12 +394,12 @@ class Read extends React.Component {
     <View>
         <View style={{flexDirection: 'row', padding: 5}}>
 
-            <View style={{backgroundColor: item.color, width: 30, height: 50}}>
+            <View style={{backgroundColor: item.color, width: 30, height: 30}}>
                 
             </View>
 
             <TouchableOpacity 
-            style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: item.color, height: 50}}
+            style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: item.color, height: 30}}
             onPress={() => this.trackerOptions(item._id)}
             >
 
@@ -398,16 +409,16 @@ class Read extends React.Component {
                 
             </TouchableOpacity>
 
-            <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderRightWidth: 2, borderColor: item.color, height: 50, padding: 10}}>
-                <Text style={{fontSize: 18}}>{item.count} / {item.goal}</Text>
+            <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderRightWidth: 2, borderColor: item.color, height: 30, padding: 5}}>
+                <Text style={{fontSize: 15, alignItems: 'center'}}>{item.count} / {item.goal} </Text>
             </View>
 
         
         </View>
 
-        <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 15, marginBottom: 10, width: '100%', justifyContent: 'center', borderColor: item.color}}>
+        <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 10, marginBottom: 10, width: '100%', justifyContent: 'center', borderColor: item.color}}>
             
-            <View style={{backgroundColor: item.color, width: item.progress+1 + '%', height: 15, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
+            <View style={{backgroundColor: item.color, width: item.progress+1 + '%', height: 10, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
             </View>
         </View>
 
@@ -421,19 +432,8 @@ class Read extends React.Component {
     render() {
         // This is for navigating to add tracker screen  DONT NEED BUT KEEP IN CASE WE WANT TO NAVIGATE TO ANOTHER SCREEN FROM HERE IN FUTURE 
         //const { navigate } = this.props.navigation;
-        /*
-        const sections = 
-            this.state.trackers == undefined 
-            ? [{ data: [{ title: "Loading..." }], title: "Loading..." }]
-            : this.state.trackers.length > 0
-            ? [{ data: this.state.trackers, title: "Current Trackers"}]
-            : [
-                {
-                    data: [{ title: "No new trackers"}],
-                    title: "No new tasks"
-                }
-              ];
-        */
+        
+        
         return (
 
         <View style={styles.container}>
@@ -501,16 +501,18 @@ class Read extends React.Component {
                         <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CANCEL</Text>
                     </TouchableOpacity>
                     </View>
-
+                
                 </Modal>
                     {/*
                     <Text>current state is: {this.state.appState}</Text>
                     <Text>current user: {global.username} </Text>  
                     */}
+                    <Text style={{marginTop: 20, marginLeft: 20, fontSize: 18, fontWeight: 'bold', padding: 5 }}>My Trackers</Text>
+                    <Divider style={{ backgroundColor: '#074e67', width: '90%', alignSelf: 'center', height: 1,}}/>
                 <FlatList
                     style={{padding: 10}}
                     data={this.state.trackers}   // changed from trackers
-                    extraData={this.state}
+                    //extraData={this.state}
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                     renderItem={this.renderItem}
                             /*
@@ -537,13 +539,52 @@ class Read extends React.Component {
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>SCAN</Text>
                         </TouchableOpacity>
                             </View> */}
+
                     
+                    <Card containerStyle={{borderWidth: 1, }}>
+                            
+                            <View style={{padding: 2, }}>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text style={{fontSize: 15, fontWeight: 'bold', padding: 5}}>Total Daily Logs</Text>
+                                    <Text style={{padding: 5, fontStyle: 'italic'}}>Feb 1 - Feb 7</Text>
+                                    {/*
+                                    <Icon 
+                                    name='rowing'
+                                    color='#f50'
+                                    />
+                                    */}
+                                </View>
+                                {/*<Divider style={{backGroundColor: '#074e67', width: '90%'}}/>*/}
+                            </View>
+                            <PureChart data={sampleData} type={'bar'} height={50} color={'blue'}/>
+
+                            {/*
+                            <View style={{flexDirection: 'row'}}>
+                                
+                                <View style={{flexDirection: 'column', padding: 5}}>
+                                    <Text style={{fontWeight: 'bold'}}>Trackers: </Text>
+                                    <Text> 4</Text>
+                                </View>
+
+                                <View style={{flexDirection: 'column', padding: 5}}>
+                                    <Text style={{fontWeight: 'bold'}}>Total Logs: </Text>
+                                    <Text> {totalLogs} </Text>
+                                </View>
+
+                                <View style={{flexDirection: 'column', padding: 5}}>
+                                    <Text style={{fontWeight: 'bold'}}>Total Progress: </Text>
+                                    <View style={{backgroundColor: 'red'}}></View>
+                                </View>
+
+                            </View>
+                            */}
+                    </Card>
 
                     <TouchableOpacity 
-                    style={{padding: 10, width: '100%', margin: 0, marginTop: 20, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    style={{padding: 5, width: '100%', margin: 0, marginTop: 15, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
                     onPress={() => this.setModalVisible(true)}
                     >
-                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
+                        <Text style={{fontSize: 20, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
                     </TouchableOpacity> 
 
 
@@ -598,6 +639,7 @@ class Read extends React.Component {
     }
 
     _loadClient() {
+        //global.logs = 0;
         const stitchAppClient = Stitch.defaultAppClient;
         const mongoClient = stitchAppClient.getServiceClient(
             RemoteMongoClient.factory,
@@ -610,9 +652,9 @@ class Read extends React.Component {
           .asArray()
           .then(docs => {
               this.setState({ trackers: docs }); // changed from trackers
-              this.setState({ refreshing: false});
+              //this.setState({ refreshing: false});
               //this.setState({ array: trackers});
-              this._updateState();
+              //this._updateState();
               //this.setState({ array: trackers});
           })
           .catch(err => {

@@ -20,6 +20,7 @@ global.username = "";
 global.loggedIn = false;
 global.update = false;
 
+
 console.disableYellowBox = true; // debug yellow
 export function masterUpdate(){//why does this not work wtf
     console.log("update main");
