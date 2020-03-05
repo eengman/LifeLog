@@ -7,6 +7,7 @@ import {
   Alert,
   Text,
   PointPropType,
+  TouchableOpacity
 } from 'react-native';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 
@@ -20,9 +21,12 @@ export default class App extends React.Component {
       count: '',
       goal: '',
       color: '',
-      
+      trackerId: '',
+      description: '',
   
     }}
+
+
   
     componentDidMount(){
       this.getTracker()
@@ -31,8 +35,7 @@ export default class App extends React.Component {
     getTracker = () => {
     this.setState({ refreshing: true });
     const id = this.props.navigation.getParam('tracker');
-      
-    
+    this.setState({trackerId: id })
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
         RemoteMongoClient.factory,
@@ -43,17 +46,19 @@ export default class App extends React.Component {
     var current;
     trackers.findOne({_id: id})
     .then(item => {
+   
     this.setState({name: item.name})
     this.setState({goal: item.goal})
     this.setState({count: item.count})
     this.setState({color: item.color})
+    this.setState({description: item.description})
+
   
     })
     .catch(err => {
     console.error(err)
     })}
  
-
     render() {
     
  
@@ -63,10 +68,18 @@ export default class App extends React.Component {
           <Text style={styles.label}>Name: {this.state.name}</Text>
           <Text style={styles.label}>Count: {this.state.count}</Text>
           <Text style={styles.label}>Goal: {this.state.goal}</Text>
+          <Text style={styles.label}>Description: {this.state.description}</Text>
           <Text style={styles.label}>Color: {this.state.color}</Text>
           <Text style={styles.label}>Percent: ({this.state.count}/{this.state.goal})</Text>
           </View>
+          <TouchableOpacity 
+                    style={{padding: 10, width: '100%', margin: 0, marginTop: 20, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                   
+                    >
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>Just for testing</Text>
+                    </TouchableOpacity> 
           </View>
+          
         
         
       

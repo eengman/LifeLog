@@ -8,6 +8,7 @@ import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 import { StackNavigator } from 'react-navigation';
+import Toast from 'react-native-simple-toast';
 //import {ListItem} from 'react-native-elements';
 //import { ProgressBar } from 'react-native-paper';
 
@@ -99,8 +100,8 @@ class Read extends React.Component {
               key: this.state.name,
               name: this.state.name,
               date: new Date(),
-              goal: this.state.goal, // in write tracker we need to set this
-              description: "", // in write tracker we also need to set this
+              goal: this.state.goal, 
+              description: this.state.description, 
               owner_id: global.username,
               color: this.state.color,
               progress: 0,
@@ -201,6 +202,7 @@ class Read extends React.Component {
         console.log("inc ", props.tagg.state.name, " to 1+", props.tagg.state.count);
         props.tagg.state.count = props.tagg.state.count + 1;
         this._updateState();
+        
     }
     // This checks whether or not the name of the added tracker is in the array 
     isMade = (val) =>{
@@ -444,20 +446,47 @@ class Read extends React.Component {
                         
                     <View style={{padding: 50}}>
                         <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
-                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name</Text>
+                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name of Tracker</Text>
                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
-                           <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Goal</Text>
+                          
+                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Description</Text>
                          <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
-                            onChangeText={(text) => this.setState({goal: text}) }
+                            onChangeText={(text) => this.setState({description: text}) }
                         />
+                          <View style={{flexDirection: 'row', padding: 15}}>
+                            <Text style={{fontWeight: 'bold', fontSize: 25}}>Daily Goal: </Text>
+                            <Picker 
+                                selectedValue={this.state.goal}
+                                style={{height: 50, width: 138}}
+                                onValueChange={(itemValue, itemIndex) => this.setState({goal: itemValue})}
+                                >
+                                    <Picker.Item label="0" value="0" color="0" />
+                                    <Picker.Item label="1" value="1" color="1" />
+                                    <Picker.Item label="2" value="2" color="2" />
+                                    <Picker.Item label="3" value="3" color="3" />
+                                    <Picker.Item label="4" value="4" color="4" />
+                                    <Picker.Item label="5" value="5" color="5" />
+                                    <Picker.Item label="6" value="6" color="6" />
+                                    <Picker.Item label="7" value="7" color="7" />
+                                    <Picker.Item label="8" value="8" color="8" />
+                                    <Picker.Item label="9" value="9" color="9" />
+                                    <Picker.Item label="10" value="10" color="10" />
+                                    <Picker.Item label="11" value="11" color="11" />
+                                    <Picker.Item label="12" value="12" color="12" />
+                                    <Picker.Item label="13" value="13" color="13" />
+                                    <Picker.Item label="14" value="14" color="14" />
+                                    <Picker.Item label="15" value="15" color="15" />
 
-                        <View style={{flexDirection: 'row', padding: 50}}>
-                            <Text style={{fontWeight: 'bold'}}>Color: </Text>
+                            </Picker>
+                            
+                        </View>
+                        <View style={{flexDirection: 'row', padding: 15}}>
+                            <Text style={{fontWeight: 'bold', fontSize: 25}}>Color: </Text>
                             <Picker 
                                 selectedValue={this.state.color}
-                                style={{height: 50, width: 100}}
+                                style={{height: 50, width: 138}}
                                 onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}
                                 >
                                 <Picker.Item label="Turquiose" value="#05878a" color="#05878a" />
@@ -470,16 +499,17 @@ class Read extends React.Component {
                                 <Picker.Item label="Grey" value="#aeb6bf" color="#aeb6bf"/>
 
                             </Picker>
-                            <TouchableOpacity style={{padding: 10, width: '50%', backgroundColor: this.state.color}}>
+                            <TouchableOpacity style={{padding: 10, width: '40%', backgroundColor: this.state.color}}>
 
                             </TouchableOpacity>
                         </View>
-                        
+                      
 
                         <TouchableOpacity 
                         style={{padding: 10, width: '100%', margin: 0, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
                         >
+                             
                         <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
                         
@@ -569,6 +599,7 @@ class Read extends React.Component {
   }
 
     _onTagDiscovered = tag => {
+        Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);
@@ -645,6 +676,7 @@ class Read extends React.Component {
           this._cleanUp();
         }
       }
+     
       _cleanUp = () => {
         NfcManager.cancelTechnologyRequest().catch(() => 0);
       }//not in use but cancels request
