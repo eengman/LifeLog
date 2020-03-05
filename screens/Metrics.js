@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {
   View,
@@ -7,30 +6,33 @@ import {
   Button,
   Alert,
   Text,
+  PointPropType,
 } from 'react-native';
-//import ProgressBarAnimated from 'react-native-progress-bar-animated';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 
-//var value =
-var incPercent = 100 / 3;
-const barWidth = Dimensions.get('screen').width - 30;
 export default class App extends React.Component {
  
-  state = {
-    progress: 0,
-    epicProgress: 0,
-    progressCustomized: 0,
-  }
   
-  increase = (key, value) => {
-    this.setState({
-      [key]: this.state[key] + value,
-    });
-  }
+  constructor(props) {
+    super(props)
+    this.state = {
+      name: '',
+      count: '',
+      goal: '',
+      color: '',
+      
   
-  _updateProgress(){
-    const tracker = this.props.navigation.getParam('tracker', 'nothing received');
+    }}
+  
+    componentDidMount(){
+      this.getTracker()
+    }
+
+    getTracker = () => {
     this.setState({ refreshing: true });
+    const id = this.props.navigation.getParam('tracker');
+      
+    
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
         RemoteMongoClient.factory,
@@ -38,76 +40,125 @@ export default class App extends React.Component {
     );
     const db = mongoClient.db("LifeLog_DB");
     const trackers = db.collection("item");
-    var currentDay = trackers.find({ _id: tracker })
-   
-    
-      //.catch(err => {
-         // console.warn(err);
-      //});
-     
-      //incPercent = current.goal;
-  }
+    var current;
+    trackers.findOne({_id: id})
+    .then(item => {
+    this.setState({name: item.name})
+    this.setState({goal: item.goal})
+    this.setState({count: item.count})
+    this.setState({color: item.color})
+  
+    })
+    .catch(err => {
+    console.error(err)
+    })}
  
-  render() {
 
-    //const barWidth = Dimensions.get('screen').width - 30;
-    //const progressCustomStyles = {
-      //backgroundColor: 'red', 
-      //borderRadius: 0,
-      //borderColor: 'orange',
-    //}
+    render() {
     
-    
+ 
     return (
       <View style={styles.container}>
         <View>
-          <Text style={styles.label}>Epic</Text>
-          <ProgressBarAnimated
-            width={barWidth}
-            value={this.state.epicProgress}
-            backgroundColorOnComplete="#6CC644"
-            onComplete={() => {
-                Alert.alert('Hey!', 'Good job!');
-              }}
-          />
-          <View style={styles.buttonContainer}>
-            <View style={styles.buttonInner}>
-              <Button
-                title = "{tracker}" // commented t
-                onPress={this.increase.bind('','epicProgress', incPercent)}
-              />
-            </View>
+          <Text style={styles.label}>Name: {this.state.name}</Text>
+          <Text style={styles.label}>Count: {this.state.count}</Text>
+          <Text style={styles.label}>Goal: {this.state.goal}</Text>
+          <Text style={styles.label}>Color: {this.state.color}</Text>
+          <Text style={styles.label}>Percent: ({this.state.count}/{this.state.goal})</Text>
           </View>
-        </View>
+          </View>
         
         
-      </View>
+      
 
       
       
     );
   }
 }
- 
 const styles = StyleSheet.create({
+  label:{
+      padding: 10,
+      fontSize: 25,
+      color: 'black',
+      fontWeight: 'bold'
+  },
   container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    marginTop: 50,
-    padding: 15,
+      //padding: 20,
+      width: '100%',
+      //apsectRatio: 2/1,
+      height: '100%',
   },
-  buttonContainer: {
-    marginTop: 15,
+  buttoncontain: {
+      //flexDirection: 'row',
+  },  
+  trackerText: {
+      padding: 10,
+      fontSize: 20,
+      color: 'white',
+      fontWeight: 'bold'
+  },  
+
+  header: {
+      alignSelf: 'center',
+      fontSize: 40,
+      color: 'white'
   },
-  separator: {
-    marginVertical: 30,
-    borderWidth: 0.5,
-    borderColor: '#DCDCDC',
+
+  elementContainer: {
+      flexDirection: 'row',
+      alignSelf: 'center',
+      marginTop: 100,
+      alignContent: 'flex-end',
   },
-  label: {
-    color: '#999',
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 10,
+
+  button: {
+      backgroundColor: 'red',
+      paddingLeft: 50,
   },
+
+  numbers: {
+      fontSize: 30,
+      backgroundColor: '#acafb5',
+      paddingLeft: 30,
+      paddingRight: 30,
+  },
+
+  textinput: {
+      paddingRight: 50,
+      fontSize: 22,
+  },
+
+  tracker: {
+      borderWidth: 1,
+      padding: 5,
+
+      backgroundColor: global.trackerColor,
+      borderRadius: 100,
+      margin: 5,
+      borderColor: '#05878a',
+      
+  },
+  button2: {
+      fontSize: 30, 
+      color: 'white', 
+      margin: 5, 
+      padding: 5, 
+      alignSelf: 'center', 
+      fontWeight: 'bold'
+  },
+  touch: {
+      padding: 10, 
+      width: 450, 
+      margin: 20, 
+      marginTop: 350, 
+      borderWidth: 2, 
+      borderColor: '#05878a', 
+      backgroundColor: '#074e67',  
+      alignSelf: 'center'
+  },
+  modalContent: {
+      flex: 2,
+  }
+
 });
