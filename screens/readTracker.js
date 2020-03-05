@@ -16,6 +16,7 @@ import  PureChart  from 'react-native-pure-chart';
 
 //var totalLogs = 0;
 var totalLogs = 0;
+var numTrackers = 0;
 
 let sampleData = [
     {
@@ -346,7 +347,7 @@ class Read extends React.Component {
      // Refresh shit  
   _onRefresh = () => {
     this.setState({ refreshing: true });
-    //global.totalLogs = 0;
+    totalLogs = 0;
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
         RemoteMongoClient.factory,
@@ -376,16 +377,19 @@ class Read extends React.Component {
   }
   
 
-  renderItem = ({item}) => {
-
+  renderItem = ({item, index, itemIndex}) => {
+    
     //console.log(item.count);
     //console.log("progress: " + item.progress);
     //let deviceWidth = Dimensions.get('window').width;
     
-    if(item.owner_id === global.username){
-        totalLogs += item.count;
-    }
-    console.log("Total logs: " + totalLogs);
+    numTrackers = index;
+    numTrackers++;
+    
+    //if(item.owner_id === global.username){
+        //totalLogs += item.count;
+    //}
+    //console.log("Total logs: " + totalLogs);
     //console.log(item.owner_id);
     
     
@@ -563,7 +567,7 @@ class Read extends React.Component {
                                 
                                 <View style={{flexDirection: 'column', padding: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Trackers: </Text>
-                                    <Text style={{alignSelf: 'center', fontSize: 15}}> 4</Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}>{numTrackers}</Text>
                                 </View>
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
