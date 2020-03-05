@@ -545,39 +545,39 @@ class Read extends React.Component {
                             
                             <View style={{padding: 2, }}>
                                 <View style={{flexDirection: 'row'}}>
-                                    <Text style={{fontSize: 15, fontWeight: 'bold', padding: 5}}>Total Daily Logs</Text>
-                                    <Text style={{padding: 5, fontStyle: 'italic'}}>Feb 1 - Feb 7</Text>
-                                    {/*
+                                    <Text style={{fontSize: 15, fontWeight: 'bold', padding: 10}}>Stats</Text>
+                                    
+                                    
                                     <Icon 
                                     name='rowing'
                                     color='#f50'
                                     />
-                                    */}
+                                    
                                 </View>
-                                {/*<Divider style={{backGroundColor: '#074e67', width: '90%'}}/>*/}
+                                <Divider style={{backGroundColor: '#074e67', width: '90%'}}/>
                             </View>
-                            <PureChart data={sampleData} type={'bar'} height={50} color={'blue'}/>
+                            {/*<PureChart data={sampleData} type={'bar'} height={50} color={'blue'}/>*/}
 
-                            {/*
+                            
                             <View style={{flexDirection: 'row'}}>
                                 
                                 <View style={{flexDirection: 'column', padding: 5}}>
-                                    <Text style={{fontWeight: 'bold'}}>Trackers: </Text>
-                                    <Text> 4</Text>
+                                    <Text style={{fontWeight: 'bold', fontSize: 15}}>Trackers: </Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}> 4</Text>
                                 </View>
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
-                                    <Text style={{fontWeight: 'bold'}}>Total Logs: </Text>
-                                    <Text> {totalLogs} </Text>
+                                    <Text style={{fontWeight: 'bold', fontSize: 15}}>Completed Trackers: </Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}> {totalLogs} </Text>
                                 </View>
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
-                                    <Text style={{fontWeight: 'bold'}}>Total Progress: </Text>
-                                    <View style={{backgroundColor: 'red'}}></View>
+                                    <Text style={{fontWeight: 'bold', fontSize: 15}}>Total Logs:  </Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}>34</Text>
                                 </View>
 
                             </View>
-                            */}
+                            
                     </Card>
 
                     <TouchableOpacity 
