@@ -17,6 +17,7 @@ import  PureChart  from 'react-native-pure-chart';
 //var totalLogs = 0;
 var totalLogs = 0;
 var numTrackers = 0;
+var trackersCompleted = 0;
 
 let sampleData = [
     {
@@ -31,6 +32,58 @@ let sampleData = [
         color: '#074e67'
     },
 ];
+
+class ListItem extends React.PureComponent {
+    
+    constructor(props){
+        super(props);
+
+    }
+
+    render(){
+        totalLogs += this.props.count;
+        numTrackers++;
+        if(this.props.progress >= 100){
+            trackersCompleted++;
+            console.log("Tracker completed");
+        }
+        console.log("Total logs: " + totalLogs);
+        return(
+            <View>
+        <View style={{flexDirection: 'row', padding: 5}}>
+
+            <View style={{backgroundColor: this.props.color, width: 30, height: 30}}>
+                
+            </View>
+
+            <TouchableOpacity 
+            style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: this.props.color, height: 30}}
+            onPress={() => this.trackerOptions(this.prop.id)}
+            >
+
+                <Text style={{ fontSize: 20, alignSelf: 'flex-start', marginLeft: 20, color: 'black'}}>
+                    {this.props.name}
+                </Text>
+                
+            </TouchableOpacity>
+
+            <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderRightWidth: 2, borderColor: this.props.color, height: 30, padding: 5}}>
+                <Text style={{fontSize: 15, alignItems: 'center'}}>{this.props.count} / {this.props.goal} </Text>
+            </View>
+
+        
+        </View>
+
+        <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 10, marginBottom: 10, width: '100%', justifyContent: 'center', borderColor: this.props.color}}>
+            
+            <View style={{backgroundColor: this.props.color, width: this.props.progress+1 + '%', height: 10, borderWidth: 1, borderRadius: 100, borderColor: this.props.color }}>
+            </View>
+        </View>
+
+    </View>
+        )
+    }
+}
 
 
 
@@ -77,7 +130,7 @@ class Read extends React.Component {
             refreshing: false,
             inc: 1,
             array: undefined,
-            trackers: [],
+            trackers: undefined,
             //array: undefined,
             color: '#05878a',
             text: "",
@@ -344,10 +397,18 @@ class Read extends React.Component {
           })
     }
 
+    _countTrackers(){
+        for(var i = 0; i < 4; i++){
+            console.log("name:" + this.state.trackers.name);
+        }
+    }
+
      // Refresh shit  
   _onRefresh = () => {
     this.setState({ refreshing: true });
     totalLogs = 0;
+    numTrackers = 0;
+    trackersCompleted = 0;
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
         RemoteMongoClient.factory,
@@ -368,6 +429,7 @@ class Read extends React.Component {
       .catch(err => {
           console.warn(err);
       });
+      this._countTrackers();
     };
 
   componentWillUnmount() {
@@ -377,12 +439,27 @@ class Read extends React.Component {
   }
   
 
-  renderItem = ({item, index, itemIndex}) => {
-    
+  renderItem = ({item, index, itemIndex}) => (
+
+    //count: this.propTypes.any,
+        //color: this.propTypes.any,
+        //goal: this.propTypes.any,
+        //progress: this.propTypes.any,
+        //name: this.propTypes.any,
+        //id: this.propTypes.any
+
+    <ListItem 
+        color = {item.color}
+        count = {item.count}
+        goal = {item.goal}
+        progress = {item.progress}
+        name = {item.name}
+        id = {item._id}
+    />
     //console.log(item.count);
     //console.log("progress: " + item.progress);
     //let deviceWidth = Dimensions.get('window').width;
-    
+    /*
     numTrackers = index;
     numTrackers++;
     
@@ -428,9 +505,10 @@ class Read extends React.Component {
 
     </View>
     )
+    */
     
     
-    }
+  )
 
 
     render() {
@@ -572,12 +650,12 @@ class Read extends React.Component {
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Completed Trackers: </Text>
-                                    <Text style={{alignSelf: 'center', fontSize: 15}}> {totalLogs} </Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}> {trackersCompleted} </Text>
                                 </View>
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Total Logs:  </Text>
-                                    <Text style={{alignSelf: 'center', fontSize: 15}}>34</Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}>{totalLogs}</Text>
                                 </View>
 
                             </View>
@@ -644,6 +722,7 @@ class Read extends React.Component {
 
     _loadClient() {
         //global.logs = 0;
+        this._onRefresh();
         const stitchAppClient = Stitch.defaultAppClient;
         const mongoClient = stitchAppClient.getServiceClient(
             RemoteMongoClient.factory,
