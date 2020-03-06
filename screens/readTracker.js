@@ -457,7 +457,7 @@ class Read extends React.Component {
         goal = {item.goal}
         progress = {item.progress}
         name = {item.name}
-        id = {item._id}
+        id = {item._id} 
     />
     )
     //console.log(item.count);
