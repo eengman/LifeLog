@@ -39,7 +39,7 @@ export default class ListItem extends React.PureComponent {
 
             <TouchableOpacity 
             style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: this.props.color, height: 30}}
-            onPress={() => this.trackerOptions(this.prop.id)}
+            onPress={() => this.trackerOptions(this.props.id)}//this needs to be fixed or we can just keep flatlist on readTracker.js
             >
 
                 <Text style={{ fontSize: 20, alignSelf: 'flex-start', marginLeft: 20, color: 'black'}}>

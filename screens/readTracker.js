@@ -139,6 +139,7 @@ class Read extends React.Component {
             text: "",
             value: false,
             totalCalcuation: 0,
+          
         }
         this._loadClient = this._loadClient.bind(this);
     }
