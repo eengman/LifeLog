@@ -10,14 +10,15 @@ import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-re
 import { StackNavigator } from 'react-navigation';
 import { Divider, Card, Icon } from 'react-native-elements';
 import  PureChart  from 'react-native-pure-chart';
+import  ListItem  from './components/ListItem';
 
 //import {ListItem} from 'react-native-elements';
 //import { ProgressBar } from 'react-native-paper';
 
 //var totalLogs = 0;
-var totalLogs = 0;
-var numTrackers = 0;
-var trackersCompleted = 0;
+global.totalLogs = 0;
+global.numTrackers = 0;
+global.trackersCompleted = 0;
 
 let sampleData = [
     {
@@ -33,6 +34,7 @@ let sampleData = [
     },
 ];
 
+/*
 class ListItem extends React.PureComponent {
     
     constructor(props){
@@ -84,6 +86,7 @@ class ListItem extends React.PureComponent {
         )
     }
 }
+*/
 
 
 
@@ -286,8 +289,9 @@ class Read extends React.Component {
     }
     
   componentDidMount = async() => { //scan tracker
+    console.log("test");
     this._loadClient();
-    //AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
+    AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
     try {
         await NfcManager.registerTagEvent()
     } catch (ex) {
@@ -320,6 +324,9 @@ class Read extends React.Component {
   }
 
   _onPressComplete(newCount, name, goal){
+    //global.totalLogs = 0;
+    //global.trackersCompleted = 0;
+    //global.numTrackers = 0;
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
       RemoteMongoClient.factory,
@@ -397,18 +404,14 @@ class Read extends React.Component {
           })
     }
 
-    _countTrackers(){
-        for(var i = 0; i < 4; i++){
-            console.log("name:" + this.state.trackers.name);
-        }
-    }
+    
 
      // Refresh shit  
   _onRefresh = () => {
     this.setState({ refreshing: true });
-    totalLogs = 0;
-    numTrackers = 0;
-    trackersCompleted = 0;
+    global.totalLogs = 0;
+    global.numTrackers = 0;
+    global.trackersCompleted = 0;
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
         RemoteMongoClient.factory,
@@ -429,17 +432,16 @@ class Read extends React.Component {
       .catch(err => {
           console.warn(err);
       });
-      this._countTrackers();
     };
 
   componentWillUnmount() {
-    //AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
+    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
     NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
     NfcManager.unregisterTagEvent().catch(() => 0);
   }
   
 
-  renderItem = ({item, index, itemIndex}) => (
+  renderItem = ({item, index, itemIndex}) => {
 
     //count: this.propTypes.any,
         //color: this.propTypes.any,
@@ -447,7 +449,8 @@ class Read extends React.Component {
         //progress: this.propTypes.any,
         //name: this.propTypes.any,
         //id: this.propTypes.any
-
+        
+    return(
     <ListItem 
         color = {item.color}
         count = {item.count}
@@ -456,6 +459,7 @@ class Read extends React.Component {
         name = {item.name}
         id = {item._id}
     />
+    )
     //console.log(item.count);
     //console.log("progress: " + item.progress);
     //let deviceWidth = Dimensions.get('window').width;
@@ -508,7 +512,7 @@ class Read extends React.Component {
     */
     
     
-  )
+    }
 
 
     render() {
@@ -645,17 +649,17 @@ class Read extends React.Component {
                                 
                                 <View style={{flexDirection: 'column', padding: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Trackers: </Text>
-                                    <Text style={{alignSelf: 'center', fontSize: 15}}>{numTrackers}</Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}>{global.numTrackers}</Text>
                                 </View>
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Completed Trackers: </Text>
-                                    <Text style={{alignSelf: 'center', fontSize: 15}}> {trackersCompleted} </Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}> {global.trackersCompleted} </Text>
                                 </View>
 
                                 <View style={{flexDirection: 'column', padding: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Total Logs:  </Text>
-                                    <Text style={{alignSelf: 'center', fontSize: 15}}>{totalLogs}</Text>
+                                    <Text style={{alignSelf: 'center', fontSize: 15}}>{global.totalLogs}</Text>
                                 </View>
 
                             </View>
