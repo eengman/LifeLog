@@ -28,7 +28,17 @@ export default class Login extends React.Component {
         };
     }
 
+    _runTests(){
+        this.makeModalVisible();
+        console.log("Login.js, makeModalVisible, success: ", this.state.register_modal_visible);
+        this.makeModalHide();
+        console.log("Login.js, makeModalHide, success: ", !this.state.makeModalHide);
+    }
+
     componentDidMount() {
+        if(global.runTests){
+            this._runTests();
+        }
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 

@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions, Vibration } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
@@ -125,12 +125,12 @@ class Read extends React.Component {
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
+        Vibration.vibrate(50);
     }
 
     // This adds a new tracker to the current "tags" array 
     addTracker = (name) => {
         console.log(name + " is working");
-        console.log("I heard you");
         if(this.isMade(name) === true){
             console.log(name + " is already here ");
             return;
@@ -149,16 +149,27 @@ class Read extends React.Component {
             '',
             [
               {text: 'Cancel',
-               onPress: () => console.log('Ask me later pressed'),
+               onPress: () => {
+                   console.log('Ask me later pressed');
+                   Vibration.vibrate(50);
+                },
                style: 'cancel'
               },
               {
                 text: 'Delete tracker',
-                onPress: () => this.deleteConfirm(item),
+                onPress: () => {
+                    Vibration.vibrate(50);
+                    this.deleteConfirm(item)
+                },
                
               },
-              {text: 'See Tracker Details',
-              onPress: () => navigate("Metrics", {screen: "Metrics", tracker: item})},
+              {
+                text: 'See Tracker Details',
+                onPress: () =>{
+                    Vibration.vibrate(50);
+                    navigate("Metrics", {screen: "Metrics", tracker: item})
+                }
+            },
              
             ],
             {cancelable: false},
@@ -171,23 +182,23 @@ class Read extends React.Component {
             '',
             [
               {text: 'Cancel',
-               onPress: () => console.log('Ask me later pressed'),
+               onPress: () => {
+                   console.log('Ask me later pressed');
+                   Vibration.vibrate(50);
+                },
                style: 'cancel'
               },
               {
                 text: 'Yes I am sure',
-                onPress: () => this._onPressDelete(key),
+                onPress: () => {
+                    this._onPressDelete(key);
+                    Vibration.vibrate(50);
+                },
               },
             ],
             {cancelable: false},
           );
     }
-
-
-    test(){// what is this for - Dylan
-        alert('hello');
-    }
-    
 
     _updateState() {
         console.log("updating state");
@@ -210,7 +221,19 @@ class Read extends React.Component {
         return this.state.trackers.some(item => val === item.key);
     }
     
+    _runTests(){
+        this.setModalVisible(true);
+        console.log("readTracker.js, setModalVisible to true, success: ", this.state.modalVisible);
+        this.setModalVisible(true);
+        console.log("readTracker.js, setModalVisible to false, success: ", !this.state.modalVisible);
+    }
+
   componentDidMount = async() => { //scan tracker
+
+    if(global.runTests){
+        this._runTests();
+    }
+
     this._loadClient();
     AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
     try {
@@ -264,6 +287,12 @@ class Read extends React.Component {
         //NfcManager.unregisterTagEvent().catch(() => 0);           // commenting out this line makes NFC always listening
     });
   }
+
+componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+    NfcManager.unregisterTagEvent().catch(() => 0);
+}
 
   _onPressComplete(newCount, name, goal){
     const stitchAppClient = Stitch.defaultAppClient;
@@ -344,7 +373,7 @@ class Read extends React.Component {
     }
 
      // Refresh shit  
-  _onRefresh = () => {
+    _onRefresh = () => {
     this.setState({ refreshing: true });
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
@@ -367,13 +396,7 @@ class Read extends React.Component {
       });
     };
 
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-    NfcManager.unregisterTagEvent().catch(() => 0);
-  }
-
-  renderItem = ({item}) => {
+    renderItem = ({item}) => { //The rendering of the individual trackers on the flatlist.
 
     console.log(item.count);
     console.log("progress: " + item.progress);
@@ -391,7 +414,10 @@ class Read extends React.Component {
 
             <TouchableOpacity 
             style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: item.color, height: 50}}
-            onPress={() => this.trackerOptions(item._id)}
+            onPress={() => {
+                Vibration.vibrate(50);
+                this.trackerOptions(item._id);
+            }}
             >
 
                 <Text style={{ fontSize: 20, alignSelf: 'flex-start', marginLeft: 20, color: 'black'}}>
@@ -555,7 +581,7 @@ class Read extends React.Component {
                                 </View>
                             )}
                             */
-                        />
+                />
 
               {/* <View style={styles.buttoncontain}>
 
@@ -600,6 +626,7 @@ class Read extends React.Component {
 
     _onTagDiscovered = tag => {
         Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
+        Vibration.vibrate(200);
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);

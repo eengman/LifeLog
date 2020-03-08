@@ -9,6 +9,8 @@ import { Stitch, AnonymousCredential } from "mongodb-stitch-react-native-sdk";
 import { C, createAppContainer } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 
+
+/*GLOBALS*/
 global.tags = [
     { tagg: new tag("Water", 0), key: "Water" },
     { tagg: new tag("LifeLog", 10), key: "LifeLog" },
@@ -19,14 +21,15 @@ global.recently = "Default";
 global.username = "";
 global.loggedIn = false;
 global.update = false;
-global.top_inst = null;
+global.top_inst = null; //neccessary to update master state
+
+global.runTests = false; //set to true to run tests
 
 console.disableYellowBox = true; // debug yellow
 
 
-window.updateMaster = (val) => {
-    console.log("Updating Masterdoc to: ", val);
-    global.top_inst.setState({ someStateVariable: val }); 
+window.updateMaster = (val) => {//func to update master, call just as window.updateMaster("here!");
+    global.top_inst.setState({ update_string: val }); 
 };
 
 
@@ -41,7 +44,6 @@ export default class App extends React.Component{
             loading: true,
             updateVal: true,
             messageShown: false,
-            update: false,
             update_string: "",
             
         };
@@ -72,8 +74,14 @@ export default class App extends React.Component{
         global.update = false;
     }
 
+    _runTests(){
+        //I couldn't think of any tests for this tbh 
+    }
 
     async componentDidMount() {
+        if(global.runTests){
+            this._runTests();
+        }
         try {
             await this._loadClient();
             setTimeout(() => {
