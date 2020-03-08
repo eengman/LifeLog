@@ -19,22 +19,16 @@ global.recently = "Default";
 global.username = "";
 global.loggedIn = false;
 global.update = false;
+global.top_inst = null;
 
 console.disableYellowBox = true; // debug yellow
-export function masterUpdate(){//why does this not work wtf
-    console.log("update main");
-    if(global.update === true){
-        console.log("Updating App.js");
-        App._update();
-        App.call(_update());
-        App._update;
-        App.setState({
-            update: !update,
-        });
-        App.
-        global.update = false;
-    } 
-}
+
+
+window.updateMaster = (val) => {
+    console.log("Updating Masterdoc to: ", val);
+    global.top_inst.setState({ someStateVariable: val }); 
+};
+
 
 export default class App extends React.Component{
 
@@ -48,7 +42,10 @@ export default class App extends React.Component{
             updateVal: true,
             messageShown: false,
             update: false,
+            update_string: "",
+            
         };
+        global.top_inst = this;
         //global.currentUserId = this.state.currentUserId;
         this.tryGetLogin();
     }
@@ -135,10 +132,10 @@ export default class App extends React.Component{
             );
         }
     }
+
+    
     
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -146,5 +143,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff"
     }
 });
+
+
 
 

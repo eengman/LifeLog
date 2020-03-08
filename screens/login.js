@@ -14,7 +14,7 @@ export default class Login extends React.Component {
         if (false) { //true to ignore login
             global.username = "LLDev";
             global.loggedIn = true;
-            this.props.action();
+            window.updateMaster("From Login!");
         }
         this.state = {
             value: false,
@@ -136,7 +136,7 @@ export default class Login extends React.Component {
                             global.loggedIn = true;
                             this.saveLogin();
                             this.setState({ previous_log_attempt: 2 });//state modifications
-                            this.props.action();
+                            window.updateMaster("Logging in...");
                         } else {//wrong pass
                             this.setState({ previous_log_attempt: 4 });
                         }

@@ -41,7 +41,7 @@ export default class Login extends React.Component {
             global.username= "";
             global.loggedIn= false;
             global.update = true;
-            masterUpdate();
+            window.updateMaster("pingas");
 
             
             console.log("logout complete...");
