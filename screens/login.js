@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler } from 'react-native';
+import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler, Vibration } from 'react-native';
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 import AsyncStorage from '@react-native-community/async-storage';
 //import Confetti from "react-native-confetti";

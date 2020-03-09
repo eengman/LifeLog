@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { StyleSheet, Text, View, Button} from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity} from 'react-native';
+//import { Icon } from 'react-native-elements';
 export default function Header({ navigation, title }) {
 
     const openMenu = () => {
@@ -9,13 +10,18 @@ export default function Header({ navigation, title }) {
 
     return(
         <View style={styles.header}>
-            <Button color='#074e67' title='||||' onPress={openMenu} />
+            
+            <TouchableOpacity style={{color: '#5c5a5a', borderWidth: 1, borderColor: 'white'}} onPress={openMenu}>
+                <Text style={{fontSize: 20}}>||||</Text>
+            </TouchableOpacity> 
+            
             <View>
                 <Text style={styles.headerText}>{ title }</Text>
             </View>
         </View>
     );
 }
+// old header color "#074e67"
 
 const styles = StyleSheet.create({
     header: {
@@ -23,13 +29,14 @@ const styles = StyleSheet.create({
         height: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     headerText: {
         fontWeight: 'bold',
         fontSize: 26,
-        color: 'white',
-        letterSpacing: 3,
+        color: '#5c5a5a',
+        fontFamily: 'monospace',
+        //letterSpacing: 3,
         padding: 24
     },
 });

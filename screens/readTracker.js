@@ -2,13 +2,14 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions, Vibration } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions, Vibration, ToolbarAndroid } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, withNavigation } from 'react-navigation';
 import Toast from 'react-native-simple-toast';
+//import { Icon } from 'react-native-elements';
 //import {ListItem} from 'react-native-elements';
 //import { ProgressBar } from 'react-native-paper';
 
@@ -55,7 +56,7 @@ class Read extends React.Component {
             refreshing: false,
             inc: 1,
             array: undefined,
-            trackers: [],
+            trackers: undefined,
             //array: undefined,
             color: '#05878a',
             text: "",
@@ -65,6 +66,7 @@ class Read extends React.Component {
     }
     // --------------------Testing app state ---------------------
     _handleAppStateChange = async (nextAppState) => {
+
         if (
           this.state.appState.match(/inactive|background/) &&
           nextAppState === 'active'
@@ -72,7 +74,6 @@ class Read extends React.Component {
           console.log('App has come to the foreground!');
         }else{
           console.log('app has come into background');
-
         }
         this.setState({appState: nextAppState});
       };
@@ -105,6 +106,7 @@ class Read extends React.Component {
               owner_id: global.username,
               color: this.state.color,
               progress: 0,
+              dateCreated: new Date(),
             })
             .then(docs => {
               if(1){
@@ -131,6 +133,7 @@ class Read extends React.Component {
     // This adds a new tracker to the current "tags" array 
     addTracker = (name) => {
         console.log(name + " is working");
+        console.log("I heard you");
         if(this.isMade(name) === true){
             console.log(name + " is already here ");
             return;
@@ -149,27 +152,16 @@ class Read extends React.Component {
             '',
             [
               {text: 'Cancel',
-               onPress: () => {
-                   console.log('Ask me later pressed');
-                   Vibration.vibrate(50);
-                },
+               onPress: () => console.log('Ask me later pressed'),
                style: 'cancel'
               },
               {
                 text: 'Delete tracker',
-                onPress: () => {
-                    Vibration.vibrate(50);
-                    this.deleteConfirm(item)
-                },
+                onPress: () => this.deleteConfirm(item),
                
               },
-              {
-                text: 'See Tracker Details',
-                onPress: () =>{
-                    Vibration.vibrate(50);
-                    navigate("Metrics", {screen: "Metrics", tracker: item})
-                }
-            },
+              {text: 'See Tracker Details',
+              onPress: () => navigate("Metrics", {screen: "Metrics", tracker: item})},
              
             ],
             {cancelable: false},
@@ -182,23 +174,23 @@ class Read extends React.Component {
             '',
             [
               {text: 'Cancel',
-               onPress: () => {
-                   console.log('Ask me later pressed');
-                   Vibration.vibrate(50);
-                },
+               onPress: () => console.log('Ask me later pressed'),
                style: 'cancel'
               },
               {
                 text: 'Yes I am sure',
-                onPress: () => {
-                    this._onPressDelete(key);
-                    Vibration.vibrate(50);
-                },
+                onPress: () => this._onPressDelete(key),
               },
             ],
             {cancelable: false},
           );
     }
+
+
+    test(){// what is this for - Dylan
+        alert('hello');
+    }
+    
 
     _updateState() {
         console.log("updating state");
@@ -221,19 +213,7 @@ class Read extends React.Component {
         return this.state.trackers.some(item => val === item.key);
     }
     
-    _runTests(){
-        this.setModalVisible(true);
-        console.log("readTracker.js, setModalVisible to true, success: ", this.state.modalVisible);
-        this.setModalVisible(true);
-        console.log("readTracker.js, setModalVisible to false, success: ", !this.state.modalVisible);
-    }
-
   componentDidMount = async() => { //scan tracker
-
-    if(global.runTests){
-        this._runTests();
-    }
-
     this._loadClient();
     AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
     try {
@@ -288,13 +268,8 @@ class Read extends React.Component {
     });
   }
 
-componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-    NfcManager.unregisterTagEvent().catch(() => 0);
-}
-
   _onPressComplete(newCount, name, goal){
+    Vibration.vibrate(300);
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
       RemoteMongoClient.factory,
@@ -373,7 +348,7 @@ componentWillUnmount() {
     }
 
      // Refresh shit  
-    _onRefresh = () => {
+  _onRefresh = () => {
     this.setState({ refreshing: true });
     const stitchAppClient = Stitch.defaultAppClient;
     const mongoClient = stitchAppClient.getServiceClient(
@@ -396,7 +371,48 @@ componentWillUnmount() {
       });
     };
 
-    renderItem = ({item}) => { //The rendering of the individual trackers on the flatlist.
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+    NfcManager.unregisterTagEvent().catch(() => 0);
+  }
+
+  // Placeholder for when there are no trackers 
+  ListEmpty = () => {
+      
+      return(
+    
+            <View style={{ width: '100%', paddingLeft: 5}} >
+                <View style={{flexDirection: 'row', paddingTop: 7, paddingBottom: 7, backgroundColor: 'white', borderColor: '#f2f3f4'}}>
+        
+                    
+                    
+                    <View style={{ width: '95%', borderColor: '#f2f3f4', backgroundColor: 'white', borderRadius: 20, flexDirection: 'row'}} elevation={5}>
+                        
+                        <TouchableOpacity 
+                        style={{ justifyContent: 'center', height: 200, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20, padding: 20}}
+                        onPress={() => this.setModalVisible(true)}
+                        >
+                        <Text style={{fontFamily: 'monospace', padding: 10 }}>
+                            Looks like you have no trackers!
+                        </Text>
+                        <Text style={{fontFamily: 'monospace', padding: 10 }}>
+                            Click here or the plus sign to add one!
+                        </Text>
+                            
+                        
+                            
+                        </TouchableOpacity>
+        
+                    </View>
+                
+                </View>
+                
+            </View>
+      )
+  }
+
+  renderItem = ({item}) => {
 
     console.log(item.count);
     console.log("progress: " + item.progress);
@@ -405,40 +421,56 @@ componentWillUnmount() {
     
     return(
     
-    <View>
-        <View style={{flexDirection: 'row', padding: 5}}>
+    <View style={{ width: '100%', paddingLeft: 5}} >
+        <View style={{flexDirection: 'row', paddingTop: 7, paddingBottom: 7, backgroundColor: 'white', borderColor: item.color}}>
 
-            <View style={{backgroundColor: item.color, width: 30, height: 50}}>
+            {/*
+            <View style={{backgroundColor: item.color, width: 15, height: 70}} elevation={5}>
                 
             </View>
-
-            <TouchableOpacity 
-            style={{flex: 1, justifyContent: 'center', borderWidth: 2, borderColor: item.color, height: 50}}
-            onPress={() => {
-                Vibration.vibrate(50);
-                this.trackerOptions(item._id);
-            }}
-            >
-
-                <Text style={{ fontSize: 20, alignSelf: 'flex-start', marginLeft: 20, color: 'black'}}>
-                    {item.name}
-                </Text>
+            */}
+            
+            <View style={{ width: '95%', borderColor: item.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'row'}} elevation={5}>
                 
-            </TouchableOpacity>
+                <TouchableOpacity 
+                style={{ justifyContent: 'center', height: 70, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20}}
+                onPress={() => this.trackerOptions(item._id)}
+                >
+                
+                <View style={{flexDirection: 'row', width: item.progress + 0.001 + '%', backgroundColor: item.color, height: 70, borderRadius: 20, maxWidth: '100%'}}>
+                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'center', marginLeft: 10, position: 'absolute', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
+                        {item.name}
+                    </Text>
+                    
 
-            <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderRightWidth: 2, borderColor: item.color, height: 50, padding: 10}}>
+                </View>
+
+                <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a'}}>
+                        {item.count}
+                </Text>
+                {/*
+                <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 15, width: '100%', justifyContent: 'center', borderColor: item.color}}>
+                
+                    <View style={{backgroundColor: item.color, width: item.progress+1 + '%', height: 15, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
+                    </View>
+                </View>
+                */}
+
+                    
+                
+                    
+                </TouchableOpacity>
+
+            </View>
+
+            {/*
+            <View style={{borderTopWidth: 2, borderBottomWidth: 2, borderRightWidth: 2, borderColor: item.color, height: 50, padding: 10, backgroundColor: item.color}}>
                 <Text style={{fontSize: 18}}>{item.count} / {item.goal}</Text>
             </View>
-
+            */}
         
         </View>
-
-        <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 15, marginBottom: 10, width: '100%', justifyContent: 'center', borderColor: item.color}}>
-            
-            <View style={{backgroundColor: item.color, width: item.progress+1 + '%', height: 15, borderWidth: 1, borderRadius: 100, borderColor: item.color }}>
-            </View>
-        </View>
-
+        
     </View>
     )
     
@@ -564,11 +596,12 @@ componentWillUnmount() {
                     <Text>current user: {global.username} </Text>  
                     */}
                 <FlatList
-                    style={{padding: 10}}
+                    style={{padding: 15, flexDirection: 'column', marginTop: 10}}
                     data={this.state.trackers}   // changed from trackers
                     extraData={this.state}
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                     renderItem={this.renderItem}
+                    ListEmptyComponent={this.ListEmpty}
                             /*
                             renderItem={({ item }) => (
                                 //<View style={styles.tracker}>
@@ -581,7 +614,7 @@ componentWillUnmount() {
                                 </View>
                             )}
                             */
-                />
+                        />
 
               {/* <View style={styles.buttoncontain}>
 
@@ -594,14 +627,14 @@ componentWillUnmount() {
                         </TouchableOpacity>
                             </View> */}
                     
-
+                <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginRight: 50, marginBottom: 20, width: 70, height: 70, borderRadius: 100}} elevation={10}>
                     <TouchableOpacity 
-                    style={{padding: 10, width: '100%', margin: 0, marginTop: 20, borderWidth: 2, borderColor: '#074e67', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    style={{ width: 70, height: 70, borderWidth: 2, borderColor: '#f8f9f9', backgroundColor: '#f8f9f9',  alignSelf: 'center', borderRadius: 100}}
                     onPress={() => this.setModalVisible(true)}
                     >
-                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>ADD NEW TRACKER</Text>
+                        <Text style={{fontSize: 40, color: 'black', margin: 0, padding: 5, alignSelf: 'center', justifyContent: 'center'}}>+</Text>
                     </TouchableOpacity> 
-
+                </View>
 
                     
                 
@@ -615,6 +648,7 @@ componentWillUnmount() {
   }
 
   _test = async () => {
+    console.log("This is from test");
     try {
         await NfcManager.registerTagEvent()
     } catch (ex) {
@@ -626,7 +660,6 @@ componentWillUnmount() {
 
     _onTagDiscovered = tag => {
         Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
-        Vibration.vibrate(200);
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);
@@ -676,6 +709,7 @@ componentWillUnmount() {
           .catch(err => {
               console.warn(err);
           });
+          
       }
 
     // This is from the write tracker page 
@@ -717,6 +751,7 @@ const styles = StyleSheet.create({
         width: '100%',
         //apsectRatio: 2/1,
         height: '100%',
+        backgroundColor: 'white'
     },
     buttoncontain: {
         //flexDirection: 'row',
