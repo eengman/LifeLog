@@ -11,7 +11,7 @@ const screens = {
         screen: Read,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='My Trackers' />,
+                headerTitle: () => <Header navigation={navigation} title='Home' />,
             }
         } 
     }, 
@@ -20,7 +20,7 @@ const screens = {
         screen: Metrics,
         navigationOptions: ({ navigation }) => {
             return {
-                headerTitle: () => <Header navigation={navigation} title='Tracker Statistics' />,
+                headerTitle: () => <Header navigation={navigation} title='Details' />,
             }
         } 
     },
