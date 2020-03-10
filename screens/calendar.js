@@ -28,7 +28,7 @@ export default class OurCalendar extends React.Component {
       theme={{
         activeDayColor: {},
         monthTitleTextStyle: {
-          color: '#6d95da',
+          color: 'black',
           fontWeight: '300',
           fontSize: 16,
         },

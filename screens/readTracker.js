@@ -570,19 +570,20 @@ class Read extends React.Component {
                     <View style ={styles.modalContent}>
                     
                         
-                    <View style={{padding: 50}}>
-                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a'}}>
-                        Create a new LifeTracker
+                    <View style={{padding: 40}}>
+                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 25, color: '#5c5a5a'}}>
+                        Create a New LifeTracker
                         </Text>
-                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a'}}>
+                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 20,  color: '#5c5a5a'}}>
                             Name of Tracker
                             </Text>
-                        <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
+                        <TextInput style={{height: 50, borderColor: '#5c5a5a', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
-                          
-                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Description</Text>
-                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
+                          <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 20, color: '#5c5a5a'}}>
+                              Description
+                              </Text>
+                         <TextInput style={{height: 80, borderColor: '#5c5a5a', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({description: text}) }
                         />
                           <View style={{flexDirection: 'row', padding: 15}}>
