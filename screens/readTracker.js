@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions, Vibration, ToolbarAndroid } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, SafeAreaView, Picker, Dimensions, Vibration, ToolbarAndroid } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
@@ -555,6 +555,7 @@ class Read extends React.Component {
                 }
               ];
         */
+       
         return (
 
             
@@ -563,8 +564,8 @@ class Read extends React.Component {
                 
              
                 <Modal visible={this.state.modalVisible} animationType='slide'>
-                    <View style ={styles.modalContent}>
-                    
+                    <SafeAreaView style ={styles.modalContent}>
+                    <ScrollView>
                         
                     <View style={{padding: 40}}>
                     <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 25, color: '#5c5a5a'}}>
@@ -651,13 +652,8 @@ class Read extends React.Component {
 
                     </View>
                         
-                    <TouchableOpacity 
-                    style={{padding: 10, width: '100%' , marginTop: '48%', margin: 20,  borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
-                    onPress={() => this.setModalVisible(false)}
-                    >
-                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CANCEL</Text>
-                    </TouchableOpacity>
-                    </View>
+                    </ScrollView>
+                    </SafeAreaView>
 
                 </Modal>
                     {/*
