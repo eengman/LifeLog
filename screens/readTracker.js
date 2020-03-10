@@ -113,7 +113,7 @@ class Read extends React.Component {
               completed: false,
               dateCompleted: undefined,
               show: this.state.show,
-              logs: undefined,
+              logs: this.state.logsTest,
             })
             .then(docs => {
               if(1){
@@ -263,8 +263,9 @@ class Read extends React.Component {
     console.log("Goal: " + goal);    
     let dateLog = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
     // Checks if user has reached their goal
-    //this.setState({logsTest: [...this.state.logsTest, dateLog]});
-    logss = [...logss, dateLog];
+    const logHopefully = [...logss, dateLog];
+    //logss = [...logss, dateLog];
+    //this.setState({logsTest: [...logss, dateLog]});
     let didComplete = false;
     if(goal <= newCount && !this.state.completed){
         let dateComplete = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
@@ -286,7 +287,7 @@ class Read extends React.Component {
     trackers 
       .updateOne(
           { name: name },
-          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: didComplete, dateCompleted: this.state.dateCompleted, logs: logss}},
+          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: didComplete, dateCompleted: this.state.dateCompleted, logs: logHopefully}},
           { upsert: true },
           {owner_id: global.username}
       )
