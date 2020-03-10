@@ -239,17 +239,13 @@ class Read extends React.Component {
         // This checks to see if new tracker is in array yet, if not then it makes it
         
         this.state.trackers.map((this_tag) => {    // changed from trackers
-            if (this.state.parsedText === this_tag.name && this_tag.completed === false) {
+            if (this.state.parsedText === this_tag.name) {
                 Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
                 this_tag.count = this_tag.count + 1;
                 console.log("Tracker goal: " + this_tag.goal);
                 this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal);
                 //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
-            }else{
-                if(this_tag.completed === true && this.state.askAgain === true){
-                    Toast.show(this_tag.name + " has already been completed", Toast.LONG); //example toast
-                }
             }
                 
             });
