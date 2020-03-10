@@ -30,7 +30,7 @@ const screens = {
 
 const CompletedTrackersStack = createStackNavigator(screens, {
     defaultNavigationOptions: {
-        headerStyle: { backgroundColor: global.headerColor, height: 70 }
+        headerStyle: { backgroundColor: '#a9cce3', height: 70 }
     }
 });
 

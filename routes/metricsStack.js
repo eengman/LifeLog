@@ -22,7 +22,7 @@ const screens = {
 
 const MetricsStack = createStackNavigator(screens, {
     defaultNavigationOptions: {
-        headerStyle: { backgroundColor: 'coral', height: 60 }
+        headerStyle: { backgroundColor: '#a9cce3', height: 60 }
     }
 });
 

@@ -22,7 +22,7 @@ const screens = {
 
 const CalendarStack = createStackNavigator(screens, {
     defaultNavigationOptions: {
-        headerStyle: { backgroundColor: global.headerColor, height: 60 }
+        headerStyle: { backgroundColor: '#a9cce3', height: 60 }
     }
 });
 

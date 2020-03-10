@@ -232,7 +232,7 @@ export default class Login extends React.Component {
                             />
                             <TextInput
                                 style={{
-                                    color: "lightgray",
+                                    color: "black",
                                     fontSize: 20,
                                     marginTop: 60
                                 }}
@@ -243,7 +243,7 @@ export default class Login extends React.Component {
                             />
                             <TextInput
                                 style={{
-                                    color: "lightgray",
+                                    color: "black",
                                     fontSize: 20,
                                     paddingTop: 0,
                                     paddingBottom: 40,
@@ -257,26 +257,26 @@ export default class Login extends React.Component {
                             <View style={{}}>
                                 <Button
                                     title="Login"
-                                    color="#32a852"
+                                    color="#a9cce3"
                                     onPress={() => this.handleLogin()}>
                                 </Button>
                                 <View style={{ marginTop: 40 }}></View>
                                 <Button
-                                    title="register?"
-                                    color="#32a852"
+                                    title="Register?"
+                                    color="#a9cce3"
                                     onPress={this.makeModalVisible}>
                                 </Button>
                             </View>
                             {
                                 this.state.previous_log_attempt == 3 &&//no un
                                 <Text>
-                                    No account with that username
+                                    Invalid username
                                 </Text>
                             }
                             {
                                 this.state.previous_log_attempt == 4 &&//wrong pass
                                 <Text>
-                                    Wrong password for that account
+                                    Incorrect password
                                 </Text>
                             }
                             {
