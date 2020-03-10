@@ -428,8 +428,8 @@ class Read extends React.Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-    NfcManager.unregisterTagEvent().catch(() => 0);
+    //NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+    //NfcManager.unregisterTagEvent().catch(() => 0);
   }
 
   // Placeholder for when there are no trackers 
