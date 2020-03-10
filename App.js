@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Platform, Text, StatusBar, StyleSheet, View, AppState, ActivityIndicator } from "react-native";
+import { Platform, Text, StatusBar, StyleSheet, View, AppState, ActivityIndicator, Vibration } from "react-native";
 //import Home from './screens/home';
 import Navigator from './routes/drawer';
 import tag from './screens/components/tag';
@@ -60,6 +60,7 @@ export default class App extends React.Component{
                 console.log("found storage username: ", value);
                 global.username= value;
                 global.loggedIn= true;
+                Vibration.vibrate();
           }
         } catch(e) {
           // error reading value

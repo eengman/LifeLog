@@ -139,6 +139,7 @@ class Read extends React.Component {
             //this.state.trackers = [...this.state.trackers, obj]; // Do not change this please, it finally works after 5 hours - Very tired Eric 
             this._updateState();
             console.log("Detected new tracker");
+            Vibration.vibrate(50);
         }
     }
 
