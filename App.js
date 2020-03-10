@@ -22,6 +22,7 @@ global.username = "";
 global.loggedIn = false;
 global.update = false;
 global.top_inst = null; //neccessary to update master state
+global.headerColor = 'white';
 
 global.runTests = false; //set to true to run tests
 
