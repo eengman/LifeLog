@@ -4,6 +4,7 @@ import { createAppContainer } from 'react-navigation';
 import ReadStack from './readStack';
 import SettingsStack from './settingsStack';
 import MetricsStack from './metricsStack';
+import CompletedTrackersStack from './completedTrackersStack';
 
 const RootDrawerNavigator = createDrawerNavigator({
     Trackers: {
@@ -12,6 +13,9 @@ const RootDrawerNavigator = createDrawerNavigator({
     },
     Metrics: {
         screen: MetricsStack,
+    },
+    Completed: {
+        screen: CompletedTrackersStack,
     },
     Settings:{
         screen: SettingsStack,
