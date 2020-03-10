@@ -496,8 +496,11 @@ class Read extends React.Component {
         */
         return (
 
+            
+
         <View style={styles.container}>
                 
+             
                 <Modal visible={this.state.modalVisible} animationType='slide'>
                     <View style ={styles.modalContent}>
                     

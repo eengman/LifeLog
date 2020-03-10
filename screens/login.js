@@ -249,6 +249,7 @@ export default class Login extends React.Component {
                                     paddingBottom: 40,
                                 }}
                                 placeholder="Password"
+                                secureTextEntry={true}
                                 onChangeText={log_typed_pass => this.setState({ log_typed_pass })}
                                 value={this.state.log_typed_pass}
                                 onSubmitEditing={() => this.handleLogin()}
@@ -315,6 +316,7 @@ export default class Login extends React.Component {
                                     paddingBottom: 40,
                                 }}
                                 placeholder="Password"
+                                secureTextEntry={true}
                                 onChangeText={typed_pass => this.setState({ typed_pass })}
                                 value={this.state.typed_pass}
                                 onSubmitEditing={() => this.handleSubmit()}
