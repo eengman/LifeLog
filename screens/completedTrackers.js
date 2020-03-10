@@ -106,7 +106,7 @@ class Read extends React.Component {
                 if (this.state.parsedText === this_tag.name && this_tag.completed === false) {
                     this_tag.count = this_tag.count + 1;
                     console.log("Tracker goal: " + this_tag.goal);
-                    this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal);
+                    //this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal);
                     //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
                     console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
                 }

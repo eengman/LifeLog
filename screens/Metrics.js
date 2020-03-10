@@ -21,6 +21,7 @@ export default class App extends React.Component {
       count: '',
       goal: '',
       color: '',
+      logs: [],
       
   
     }}
@@ -48,12 +49,16 @@ export default class App extends React.Component {
     this.setState({goal: item.goal})
     this.setState({count: item.count})
     this.setState({color: item.color})
+    this.setState({logs: item.logs})
   
     })
     .catch(err => {
     console.error(err)
     })}
- 
+    
+
+    
+    
 
     render() {
     
@@ -66,8 +71,17 @@ export default class App extends React.Component {
           <Text style={styles.label}>Goal: {this.state.goal}</Text>
           <Text style={styles.label}>Color: {this.state.color}</Text>
           <Text style={styles.label}>Percent: ({this.state.count}/{this.state.goal})</Text>
-          </View>
-          </View>
+          <Text style={styles.label}>Logs: </Text>
+        </View>
+        <View style={{padding: 10, borderWidth: 0.5, width: '60%', margin: 10}}>
+
+        {this.state.logs.map((item) =>(
+          <Text>{item}</Text>)
+        )}
+        
+        </View>
+
+      </View>
         
         
       

@@ -10,9 +10,7 @@ import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-re
 import { StackNavigator, withNavigation } from 'react-navigation';
 import Toast from 'react-native-simple-toast';
 import  Icon  from 'react-native-vector-icons/Ionicons';
-//import {ListItem} from 'react-native-elements';
 //import { ProgressBar } from 'react-native-paper';
-
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -65,6 +63,7 @@ class Read extends React.Component {
             dateCompleted: undefined,
             show: true,
             askAgain: true,
+            logsTest: [],
         }
         this._loadClient = this._loadClient.bind(this);
     }
@@ -114,6 +113,7 @@ class Read extends React.Component {
               completed: false,
               dateCompleted: undefined,
               show: this.state.show,
+              logs: undefined,
             })
             .then(docs => {
               if(1){
@@ -246,7 +246,7 @@ class Read extends React.Component {
                 Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
                 this_tag.count = this_tag.count + 1;
                 console.log("Tracker goal: " + this_tag.goal);
-                this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal);
+                this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal, this_tag.logs);
                 //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
             }
@@ -257,13 +257,19 @@ class Read extends React.Component {
     });
   }
 
-  _onPressComplete(newCount, name, goal){
+  // The logss that is passed is the current database array with a diff name, which adds the date log, and then the database array is set to the logss in the updateOne function
+  _onPressComplete(newCount, name, goal, logss){
     console.log("Current count: " + newCount);
-    console.log("Goal: " + goal);
+    console.log("Goal: " + goal);    
+    let dateLog = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
     // Checks if user has reached their goal
+    //this.setState({logsTest: [...this.state.logsTest, dateLog]});
+    logss = [...logss, dateLog];
+    let didComplete = false;
     if(goal <= newCount && !this.state.completed){
         let dateComplete = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
         this.setState({completed: true, dateCompleted: dateComplete});
+        didComplete = true;
         console.log("goal reached");
         console.log("Completed on: " + dateComplete);
     }
@@ -280,7 +286,7 @@ class Read extends React.Component {
     trackers 
       .updateOne(
           { name: name },
-          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: this.state.completed, dateCompleted: this.state.dateCompleted }},
+          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: didComplete, dateCompleted: this.state.dateCompleted, logs: logss}},
           { upsert: true },
           {owner_id: global.username}
       )
@@ -482,15 +488,14 @@ class Read extends React.Component {
     
     <View style={{ width: '100%', paddingLeft: 5}} >
         <View style={{flexDirection: 'row', paddingTop: 7, paddingBottom: 7, backgroundColor: 'white', borderColor: item.color}}>
-
             {/*
             <View style={{backgroundColor: item.color, width: 15, height: 70}} elevation={5}>
                 
             </View>
             */}
             
-            <View style={{ width: '95%', borderColor: item.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'column'}} elevation={5}>
-                
+            
+            <View style={{ width: '95%', borderColor: item.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'column', maxWidth: '95%'}} elevation={5}>
                 <TouchableOpacity 
                 style={{ justifyContent: 'center', height: 70, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20}}
                 onPress={() => this.trackerOptions(item._id)}
