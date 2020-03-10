@@ -214,6 +214,7 @@ class Read extends React.Component {
                 { 
                     status: "new",
                     owner_id: global.username,
+                    completed: true,
                     
                 }, 
               { sort: { date: -1} }

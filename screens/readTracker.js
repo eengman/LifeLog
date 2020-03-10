@@ -111,7 +111,7 @@ class Read extends React.Component {
               color: this.state.color,
               progress: 0,
               dateCreated: new Date(),
-              completed: this.state.completed,
+              completed: false,
               dateCompleted: undefined,
               show: this.state.show,
             })
@@ -135,6 +135,9 @@ class Read extends React.Component {
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
         Vibration.vibrate(50);
+        if(!visible){
+            Toast.show('Pull down to refresh', Toast.LONG); //example toast
+        }
     }
 
     // This adds a new tracker to the current "tags" array 
@@ -610,26 +613,24 @@ class Read extends React.Component {
                             </Picker>
                             
                         </View>
-                        <View style={{flexDirection: 'row', padding: 15}}>
-                            <Text style={{fontWeight: 'bold', fontSize: 25}}>Color: </Text>
-                            <Picker 
-                                selectedValue={this.state.color}
-                                style={{height: 50, width: 138}}
-                                onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}
-                                >
-                                <Picker.Item label="Turquiose" value="#05878a" color="#05878a" />
-                                <Picker.Item label="Pink" value="#f5b7b1" color="#f5b7b1" />
-                                <Picker.Item label="Purple" value="#d7bde2" color="#d7bde2"/>
-                                <Picker.Item label="Blue" value="#a9cce3" color="#a9cce3"/>
-                                <Picker.Item label="Green" value="#a3e4d7" color="#a3e4d7"/>
-                                <Picker.Item label="Yellow" value="#f9e79f" color="#f9e79f"/>
-                                <Picker.Item label="Orange" value="#edbb99" color="#edbb99"/>
-                                <Picker.Item label="Grey" value="#aeb6bf" color="#aeb6bf"/>
+                        <View style={{padding: 15, width: '80%'}}>
 
-                            </Picker>
-                            <TouchableOpacity style={{padding: 10, width: '40%', backgroundColor: this.state.color}}>
-
-                            </TouchableOpacity>
+                            <View style={{flexDirection: 'row'}}>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#05878a"}} onPress={() => this.setState({color: "#05878a"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#f5b7b1"}} onPress={() => this.setState({color: "#f5b7b1"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#d7bde2"}} onPress={() => this.setState({color: "#d7bde2"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#a9cce3"}} onPress={() => this.setState({color: "#a9cce3"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#a3e4d7"}} onPress={() => this.setState({color: "#a3e4d7"})}/>
+                                
+                            </View>
+                            <View style={{flexDirection: 'row'}}>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#f9e79f"}} onPress={() => this.setState({color: "#f9e79f"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#edbb99"}} onPress={() => this.setState({color: "#edbb99"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#aeb6bf"}} onPress={() => this.setState({color: "#aeb6bf"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#ec7063"}} onPress={() => this.setState({color: "#ec7063"})}/>
+                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#27ae60"}} onPress={() => this.setState({color: "#27ae60"})}/>
+                                
+                            </View>
                         </View>
                       
 
