@@ -507,8 +507,12 @@ class Read extends React.Component {
                     
                         
                     <View style={{padding: 50}}>
-                        <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
-                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name of Tracker</Text>
+                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a'}}>
+                        Create a new LifeTracker
+                        </Text>
+                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a'}}>
+                            Name of Tracker
+                            </Text>
                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
