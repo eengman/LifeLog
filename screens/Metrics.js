@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {
@@ -8,7 +9,9 @@ import {
   Alert,
   Text,
   PointPropType,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView, 
+  SafeAreaView,
 } from 'react-native';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 import ProgressCircle from 'react-native-progress-circle'
@@ -27,6 +30,7 @@ export default class App extends React.Component {
       color: '',
       logs: [],
       percentage: 0,
+      description: '',
       
   
     }}
@@ -56,46 +60,92 @@ export default class App extends React.Component {
     this.setState({color: item.color})
     this.setState({logs: item.logs})
     this.setState({percentage: Math.floor((item.count/item.goal)*100)})
+    this.setState({description: item.description})
     })
     .catch(err => {
     console.error(err)
     })}
     
-
-    
-    
-
+    /*
+    <Text style={styles.label}>Name: {this.state.name}</Text>
+          <Text style={styles.label}>Count: {this.state.count}</Text>
+          <Text style={styles.label}>Goal: {this.state.goal}</Text>
+          <Text style={styles.label}>Color:   <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: this.state.color}} /></Text>
+          <Text style={styles.label}>Percent: ({this.state.count}/{this.state.goal})</Text>
+    */
     render() {
       
  
     return (
       
-      <View style={styles.container}>
-        <View>
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+        <View style={{margin: 20, padding: 10}}>
         
-          <Text style={styles.label}>Name: {this.state.name}</Text>
-          <Text style={styles.label}>Count: {this.state.count}</Text>
-          <Text style={styles.label}>Goal: {this.state.goal}</Text>
-          <Text style={styles.label}>Color:   <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: this.state.color}} /></Text>
-          <Text style={styles.label}>Percent: ({this.state.count}/{this.state.goal})</Text>
+        <View style={{ width: '100%', marginBottom: 10}}>
+        <View style={{flexDirection: 'row', backgroundColor: 'white', borderColor: this.state.color, margin: 10, borderRadius: 20}} elevation={10}>
+            
+            
+            <View style={{ width: '100%', borderColor: this.state.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'column', maxWidth: '100%'}} elevation={5}>
+                <TouchableOpacity 
+                style={{ justifyContent: 'center', height: 70, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20}}
+                
+                >
+                
+                <View style={{flexDirection: 'row', width: '100%', backgroundColor: this.state.color, height: 70, borderRadius: 20, maxWidth: '100%', opacity: 0.7}}>
+                    <Text style={{flexDirection: 'row', fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'center', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
+                        {this.state.name}
+                      
+                    </Text>
+
+                </View>
+
+                <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a', opacity: 0.7}}>
+                        {this.state.count}
+                </Text>
+                    
+                </TouchableOpacity>
+
+            </View>
+        
+        </View>
+        
+    </View>
+    
+    <Text style={{fontFamily: 'monospace', fontSize: 15, margin: 15, marginBottom: 0, color: '#5c5a5a', fontWeight: 'bold', opacity: 0.7}} >Description: </Text>
+    <View style={{borderWidth: 1, borderRadius: 20, margin: 15, borderColor: 'white', backgroundColor: 'white'}} elevation={5}>
+      
+      <Text style={styles.label}>
+      {this.state.description}
+      </Text>
+    </View>
+
+      <View style={{margin: 15, alignSelf: 'center', marginBottom: 0}}>        
           <ProgressCircle
             percent={this.state.percentage}
             radius={70}
-            borderWidth={8}
-            color="#3399FF"
+            borderWidth={20}
+            color= {this.state.color}
             shadowColor="#999"
-            bgColor="#fff" >
-            <Text style={{ fontSize: 18 }}>{this.state.percentage + '%'}</Text>
+            opacity={0.7}
+            bgColor="#fff" 
+            >
+            <Text style={{ fontSize: 20, fontFamily: 'monospace', color: '#5c5a5a', fontWeight: 'bold', opacity: 0.7 }}>{this.state.percentage + '%'}</Text>
            </ProgressCircle>
-          <Text style={styles.label}>Logs: </Text>
-        </View>
-      <View style={{padding: 10, borderWidth: 0.5, width: '60%', margin: 10}}>
+           </View>  
+  </View>
+        
+      <View style={{padding: 10, borderWidth: 1, width: '80%', margin: 30, alignSelf: 'center', borderRadius: 20, borderColor: 'white', marginTop: 5, backgroundColor: 'white'}} elevation={5}>
 
+        {this.state.logs.map((item) =>(
+          <Text style={{fontFamily: 'monospace', fontSize: 15, opacity: 0.7, fontWeight: 'bold', color: '#5c5a5a',}}>{item}</Text>)
+        )}
 
         
-        </View>
+    </View>
 
-      </View>
+    </ScrollView>
+  </SafeAreaView>
         
         
       
@@ -107,10 +157,13 @@ export default class App extends React.Component {
 }
 const styles = StyleSheet.create({
   label:{
-      padding: 10,
-      fontSize: 25,
-      color: 'black',
-      fontWeight: 'bold'
+      padding: 5,
+      fontSize: 20,
+      color: '#5c5a5a',
+      fontWeight: 'bold',
+      paddingLeft: 30,
+      fontFamily: 'monospace',
+      opacity: 0.7
   },
   container: {
       //padding: 20,
