@@ -804,6 +804,8 @@ class Read extends React.Component {
             this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
             await NfcManager.setAlertMessageIOS('I got your tag!');
             this._cleanUp();
+            this._onRefresh();   
+
         } catch (ex) {
           this._cleanUp();
         }
