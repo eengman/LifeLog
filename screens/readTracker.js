@@ -402,6 +402,53 @@ class Read extends React.Component {
           })
     }
 
+    reset(name) {
+            // Checks if user has reached their goal
+            Vibration.vibrate(300);
+            const stitchAppClient = Stitch.defaultAppClient;
+            const mongoClient = stitchAppClient.getServiceClient(
+              RemoteMongoClient.factory,
+              "mongodb-atlas"
+            );
+            const db = mongoClient.db("LifeLog_DB");
+            const trackers = db.collection("item");
+            trackers 
+              .updateOne(
+                  {name: name},
+                  {$set:  {count: 0, logDate: new Date(), progress: 0 }},
+                  { upsert: false },
+                  {owner_id: global.username}
+              )
+              .then(() => {
+              trackers
+                    .find(
+                        { 
+                            status: "new",
+                            owner_id: global.username,
+                            show: true,
+                        }, 
+                      { sort: { date: -1} }
+                    )
+                  .asArray()
+                  .then(docs => {
+                      this.setState({ trackers: docs});  // changed from tracker
+                      this.setState({ array: trackers});    // array test
+                      this._updateState();
+                      //this.setState({ count: newCount});
+                      if (this._confettiView){
+                          this._confettiView.startConfetti();
+                      }
+                  })
+                  .catch(err => {
+                      console.warn(err);
+                  });
+              })
+              .catch(err => {
+                  console.warn(err);   
+              })
+            
+    }
+
      // Refresh shit  
   _onRefresh = () => {
     this.setState({ refreshing: true });
@@ -410,32 +457,13 @@ class Read extends React.Component {
         RemoteMongoClient.factory,
         "mongodb-atlas"
     );
+    
     const db = mongoClient.db("LifeLog_DB");
     const trackers = db.collection("item");
     trackers 
-        .find({ owner_id: global.username }, { sort: { date: -1} })
+        .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
         .asArray()
         .then(docs => {
-            let currdate = new Date();
-            docs.map((tag) => {//we will check for each tag if it is a newer day than the previous check
-                let thisdate = new Date(tag.date);
-                if(//we are more at least on the next day
-                    thisdate.getDate() < currdate.getDate()
-                    || thisdate.getMonth() < currdate.getMonth()
-                    || thisdate.getFullYear() < currdate.getFullYear()
-                ){
-                    tag.date = new Date();//locally
-                    tag.count = 0;
-                    trackers.updateOne({//query
-                        owner_id: global.username,
-                        key: tag.key
-                    },
-                    {//set
-                        $set: {count: 0, date: Date.now()}
-                    }
-                    )
-                }
-            });
             this.setState({ trackers: docs }); // changed from trackers
             this.setState({ refreshing: false});
             this.setState({ array: trackers});    // array test
@@ -445,6 +473,21 @@ class Read extends React.Component {
       .catch(err => {
           console.warn(err);
       });
+      let currdate = new Date();
+            this.state.trackers.map((tag) => {//we will check for each tag if it is a newer day than the previous check
+                let thisdate = tag.logDate;
+                if(//we are more at least on the next day
+                    thisdate.getDate() < currdate.getDate()
+                    || thisdate.getMonth() < currdate.getMonth()
+                    || thisdate.getFullYear() < currdate.getFullYear()
+                    //true    // this is set to true so i can test it right now
+                ){
+                    this.reset(tag.name);
+                }
+                console.log("current date: " + currdate);
+                console.log("this date: " + thisdate);
+            });
+      
     };
 
   componentWillUnmount() {
