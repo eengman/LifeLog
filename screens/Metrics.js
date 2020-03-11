@@ -8,10 +8,14 @@ import {
   Alert,
   Text,
   PointPropType,
+  TouchableOpacity
 } from 'react-native';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
+import ProgressCircle from 'react-native-progress-circle'
+
 
 export default class App extends React.Component {
+  
  
   
   constructor(props) {
@@ -22,10 +26,11 @@ export default class App extends React.Component {
       goal: '',
       color: '',
       logs: [],
+      percentage: 0,
       
   
     }}
-  
+
     componentDidMount(){
       this.getTracker()
     }
@@ -50,7 +55,7 @@ export default class App extends React.Component {
     this.setState({count: item.count})
     this.setState({color: item.color})
     this.setState({logs: item.logs})
-  
+    this.setState({percentage: Math.floor((item.count/item.goal)*100)})
     })
     .catch(err => {
     console.error(err)
@@ -61,23 +66,32 @@ export default class App extends React.Component {
     
 
     render() {
-    
+      
  
     return (
+      
       <View style={styles.container}>
         <View>
+        
           <Text style={styles.label}>Name: {this.state.name}</Text>
           <Text style={styles.label}>Count: {this.state.count}</Text>
           <Text style={styles.label}>Goal: {this.state.goal}</Text>
-          <Text style={styles.label}>Color: {this.state.color}</Text>
+          <Text style={styles.label}>Color:   <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: this.state.color}} /></Text>
           <Text style={styles.label}>Percent: ({this.state.count}/{this.state.goal})</Text>
+          <ProgressCircle
+            percent={this.state.percentage}
+            radius={70}
+            borderWidth={8}
+            color="#3399FF"
+            shadowColor="#999"
+            bgColor="#fff" >
+            <Text style={{ fontSize: 18 }}>{this.state.percentage + '%'}</Text>
+           </ProgressCircle>
           <Text style={styles.label}>Logs: </Text>
         </View>
-        <View style={{padding: 10, borderWidth: 0.5, width: '60%', margin: 10}}>
+      <View style={{padding: 10, borderWidth: 0.5, width: '60%', margin: 10}}>
 
-        {this.state.logs.map((item) =>(
-          <Text>{item}</Text>)
-        )}
+
         
         </View>
 
