@@ -18,13 +18,16 @@ import { Calendar } from 'react-native-calendario';
 export default class OurCalendar extends React.Component {
 
   render() {
-
+    const { navigate } = this.props.navigation;
+    const Cdate = "any day"
     return (
       <Calendar
-      onChange={(range) => console.log(range)}
+      
+      onChange={(range) => navigate("PastDay", {screen: "PastDay", Cdate: "range"})}
       minDate="2018-04-20"
-      startDate="2018-04-30"
-      endDate="2018-05-05"
+      startDate="2020-01-01"
+      endDate="2022-01-01"
+      disableRange={true}
       theme={{
         activeDayColor: {},
         monthTitleTextStyle: {
