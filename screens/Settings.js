@@ -31,12 +31,12 @@ export default class Login extends React.Component {
 
     render() {
         return (
-            <View style={styles.simple}>
-
-                <Button
-                    title= "logout"
-                    onPress={()=>this.logoutPressed()}
-                />
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <TouchableOpacity
+            style={{ justifyContent: 'center', backgroundColor: '#A9CCE3', width: '50%',height: 60, borderRadius: 20, padding: 20, marginTop: 20 }}
+            onPress={()=>this.logoutPressed()}>
+            <Text style={{fontWeight: 'bold', color: '#616A6B', justifyContent: 'center', alignItems: 'center', textAlign:'center', fontSize: 25}}>LOG OUT</Text>
+            </TouchableOpacity>
             </View>
         );
     }

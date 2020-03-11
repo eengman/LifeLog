@@ -261,17 +261,16 @@ export default class Login extends React.Component {
                                 onSubmitEditing={() => this.handleLogin()}
                             />
                             <View style={{}}>
-                                <Button
-                                    title="Login"
-                                    color="#a9cce3"
-                                    onPress={() => this.handleLogin()}>
-                                </Button>
-                                <View style={{ marginTop: 40 }}></View>
-                                <Button
-                                    title="Register?"
-                                    color="#a9cce3"
-                                    onPress={this.makeModalVisible}>
-                                </Button>
+                            <TouchableOpacity 
+                                style={{ justifyContent: 'center', backgroundColor: '#5D6D7E', width: '100%',height: 50, borderRadius: 20, padding: 20}}
+                                onPress={() => this.handleLogin()}>
+                                <Text style={{fontWeight: 'bold', color: '#fff', justifyContent: 'center', alignItems: 'center', textAlign:'center', fontSize: 25}}>LOGIN</Text></TouchableOpacity>
+                            <View style={{ marginTop: 20 }}></View>
+                            <TouchableOpacity 
+                                style={{ justifyContent: 'center', backgroundColor: '#5D6D7E', width: '100%',height: 50, borderRadius: 20, padding: 20}}
+                                onPress={() => this.makeModalVisible()}>
+                                <Text style={{fontWeight: 'bold', color: '#fff', justifyContent: 'center', alignItems: 'center', textAlign:'center', fontSize: 25}}>REGISTER</Text>
+                                </TouchableOpacity>
                             </View>
                             {
                                 this.state.previous_log_attempt == 3 &&//no un
@@ -327,11 +326,12 @@ export default class Login extends React.Component {
                                 value={this.state.typed_pass}
                                 onSubmitEditing={() => this.handleSubmit()}
                             />
-                            <Button
-                                title="Register"
+                            <View style={{ marginTop: 20 }}>
+                            <TouchableOpacity 
+                                style={{ justifyContent: 'center', backgroundColor: '#5D6D7E', width: '100%',height: 50, borderRadius: 20, padding: 20}}
                                 onPress={() => this.handleSubmit()}>
-                            </Button>
-
+                                <Text style={{fontWeight: 'bold', color: '#fff', justifyContent: 'center', alignItems: 'center', textAlign:'center', fontSize: 25}}>REGISTER</Text>
+                                </TouchableOpacity></View>
                             {this.state.previous_reg_attempt == 1 && //if fail
                                 <Text >
                                     Account already exists.
@@ -343,12 +343,12 @@ export default class Login extends React.Component {
                                     Bad registration data, try something else
                             </Text>
                             }
-                            <View style={{ marginTop: 40 }}></View>
-                            <Button
-                                title="back"
-                                color="#32a852"
-                                onPress={this.makeModalHide}>
-                            </Button>
+                            <View style={{ marginTop: 20 }}>
+                            <TouchableOpacity 
+                                style={{ justifyContent: 'center', backgroundColor: '#5D6D7E', width: '100%',height: 50, borderRadius: 20, padding: 20}}
+                                onPress={() => this.makeModalHide()}>
+                                <Text style={{fontWeight: 'bold', color: '#fff', justifyContent: 'center', alignItems: 'center', textAlign:'center', fontSize: 25}}>BACK</Text>
+                            </TouchableOpacity></View>
                             <ScrollView
                                 contentContainerStyle={{ flex: 1 }}
                                 keyboardShouldPersistTaps="handled"
