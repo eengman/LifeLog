@@ -134,6 +134,11 @@ export default class App extends React.Component {
            </ProgressCircle>
            </View>  
   </View>
+      <View style={{margin: 0, alignSelf: 'center', marginBottom: 5}}>  
+         <Text style={styles.label}>
+             Goal: {this.state.goal} times a day
+             </Text>
+  </View>
         
       <View style={{padding: 10, borderWidth: 1, width: '80%', margin: 30, alignSelf: 'center', borderRadius: 20, borderColor: 'white', marginTop: 5, backgroundColor: 'white'}} elevation={5}>
 
