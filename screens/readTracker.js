@@ -383,14 +383,34 @@ componentWillUnmount() {
     const db = mongoClient.db("LifeLog_DB");
     const trackers = db.collection("item");
     trackers 
-      .find({ owner_id: global.username }, { sort: { date: -1} })
-      .asArray()
-      .then(docs => {
-          this.setState({ trackers: docs }); // changed from trackers
-          this.setState({ refreshing: false});
-          this.setState({ array: trackers});    // array test
-          this._updateState(); // added for bug fixing
-      })
+        .find({ owner_id: global.username }, { sort: { date: -1} })
+        .asArray()
+        .then(docs => {
+            let currdate = new Date();
+            docs.map((tag) => {//we will check for each tag if it is a newer day than the previous check
+                let thisdate = new Date(tag.date);
+                if(//we are more at least on the next day
+                    thisdate.getDate() < currdate.getDate()
+                    || thisdate.getMonth() < currdate.getMonth()
+                    || thisdate.getFullYear() < currdate.getFullYear()
+                ){
+                    tag.date = new Date();//locally
+                    tag.count = 0;
+                    trackers.updateOne({//query
+                        owner_id: global.username,
+                        key: tag.key
+                    },
+                    {//set
+                        $set: {count: 0, date: Date.now()}
+                    }
+                    )
+                }
+            });
+            this.setState({ trackers: docs }); // changed from trackers
+            this.setState({ refreshing: false});
+            this.setState({ array: trackers});    // array test
+            this._updateState(); // added for bug fixing
+        })
       .catch(err => {
           console.warn(err);
       });
