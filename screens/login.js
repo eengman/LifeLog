@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler } from 'react-native';
+import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler, Vibration } from 'react-native';
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 import AsyncStorage from '@react-native-community/async-storage';
 //import Confetti from "react-native-confetti";
@@ -232,7 +232,7 @@ export default class Login extends React.Component {
                             />
                             <TextInput
                                 style={{
-                                    color: "lightgray",
+                                    color: "black",
                                     fontSize: 20,
                                     marginTop: 60
                                 }}
@@ -243,12 +243,13 @@ export default class Login extends React.Component {
                             />
                             <TextInput
                                 style={{
-                                    color: "lightgray",
+                                    color: "black",
                                     fontSize: 20,
                                     paddingTop: 0,
                                     paddingBottom: 40,
                                 }}
                                 placeholder="Password"
+                                secureTextEntry={true}
                                 onChangeText={log_typed_pass => this.setState({ log_typed_pass })}
                                 value={this.state.log_typed_pass}
                                 onSubmitEditing={() => this.handleLogin()}
@@ -256,26 +257,26 @@ export default class Login extends React.Component {
                             <View style={{}}>
                                 <Button
                                     title="Login"
-                                    color="#32a852"
+                                    color="#a9cce3"
                                     onPress={() => this.handleLogin()}>
                                 </Button>
                                 <View style={{ marginTop: 40 }}></View>
                                 <Button
-                                    title="register?"
-                                    color="#32a852"
+                                    title="Register?"
+                                    color="#a9cce3"
                                     onPress={this.makeModalVisible}>
                                 </Button>
                             </View>
                             {
                                 this.state.previous_log_attempt == 3 &&//no un
                                 <Text>
-                                    No account with that username
+                                    Invalid username
                                 </Text>
                             }
                             {
                                 this.state.previous_log_attempt == 4 &&//wrong pass
                                 <Text>
-                                    Wrong password for that account
+                                    Incorrect password
                                 </Text>
                             }
                             {
@@ -315,6 +316,7 @@ export default class Login extends React.Component {
                                     paddingBottom: 40,
                                 }}
                                 placeholder="Password"
+                                secureTextEntry={true}
                                 onChangeText={typed_pass => this.setState({ typed_pass })}
                                 value={this.state.typed_pass}
                                 onSubmitEditing={() => this.handleSubmit()}

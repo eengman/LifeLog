@@ -2,15 +2,17 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, SafeAreaView, Picker, Dimensions, Vibration, ToolbarAndroid } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Fragment, Li, Ul, FlatList, Alert, Modal, TextInput, AppState, Keyboard, RefreshControl, ScrollView, Picker, Dimensions, Vibration, ToolbarAndroid } from 'react-native';
 import NfcManager, { Ndef, NfcEvents, NfcTech } from '../NfcManager';
 import tag from './components/tag';
 import about from './about';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
 import { StackNavigator, withNavigation } from 'react-navigation';
 import Toast from 'react-native-simple-toast';
-import  Icon  from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
+//import {ListItem} from 'react-native-elements';
 //import { ProgressBar } from 'react-native-paper';
+
 
 function buildUrlPayload(valueToWrite) {
     return Ndef.encodeMessage([
@@ -61,9 +63,6 @@ class Read extends React.Component {
             value: false,
             completed: false,
             dateCompleted: undefined,
-            show: true,
-            askAgain: true,
-            logsTest: [],
         }
         this._loadClient = this._loadClient.bind(this);
     }
@@ -85,99 +84,40 @@ class Read extends React.Component {
 
     //--------------------Testing app state -----------------------
 
-    handleSubmit = (obj) => {
-        Keyboard.dismiss();
-        console.log("submitting");
-        const stitchAppClient = Stitch.defaultAppClient;
-        const mongoClient = stitchAppClient.getServiceClient(
-          RemoteMongoClient.factory,
-          "mongodb-atlas"
     
-        );
-        const db = mongoClient.db("LifeLog_DB");
-        const trackers = db.collection("item");
-        if(this.state.name != "" ){
-          trackers
-            .insertOne({
-              status: "new",
-              count: 0,
-              key: this.state.name,
-              name: this.state.name,
-              date: new Date(),
-              goal: this.state.goal, 
-              description: this.state.description, 
-              owner_id: global.username,
-              color: this.state.color,
-              progress: 0,
-              dateCreated: new Date(),
-              completed: false,
-              dateCompleted: undefined,
-              show: this.state.show,
-              logs: this.state.logsTest,
-            })
-            .then(docs => {
-              if(1){
-                // put confetti here if we want it
-              }
-              this.setState({ value: !this.state.value});
-              this.setState({ text: ""});
-              //this.setState({ trackers: docs});  // changed from trackers
-              this.setState({array: trackers})  // array test
-              this._updateState();
-            })
-            .catch(err => {
-              console.warn(err);
-            })
+
+    componentDidMount = async() => { //scan tracker
+        this._loadClient();
+        AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
+        try {
+            await NfcManager.registerTagEvent()
+        } catch (ex) {
+            console.warn('ex', ex);
+            NfcManager.unregisterTagEvent().catch(() => 0);
         }
-      };
+        NfcManager.start();
+        NfcManager.setEventListener(NfcEvents.DiscoverTag, tags => {
+            console.log('tag', tags);
+            this._onTagDiscovered(tags); //writes into 'parsedText
+            NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
+            
+            // This checks to see if new tracker is in array yet, if not then it makes it
+            this.state.trackers.map((this_tag) => {    // changed from trackers
+                if (this.state.parsedText === this_tag.name && this_tag.completed === false) {
+                    this_tag.count = this_tag.count + 1;
+                    console.log("Tracker goal: " + this_tag.goal);
+                    //this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal);
+                    //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
+                    console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
+                }
+                    
+                });
+        
+            //NfcManager.unregisterTagEvent().catch(() => 0);           // commenting out this line makes NFC always listening
+        });
+      }
 
-
-    setModalVisible(visible) {
-        this.setState({modalVisible: visible});
-        Vibration.vibrate(50);
-        if(!visible){
-            Toast.show('Pull down to refresh', Toast.LONG); //example toast
-        }
-    }
-
-    // This adds a new tracker to the current "tags" array 
-    addTracker = (name) => {
-        console.log(name + " is working");
-        console.log("I heard you");
-        if(this.isMade(name) === true){
-            console.log(name + " is already here ");
-            return;
-        }else{
-            const obj = {tagg: new tag(name, 0), key: name};
-            //this.state.trackers = [...this.state.trackers, obj]; // Do not change this please, it finally works after 5 hours - Very tired Eric 
-            this._updateState();
-            console.log("Detected new tracker");
-            Vibration.vibrate(50);
-        }
-    }
-
-    trackerOptions = (item) => {
-        const { navigate } = this.props.navigation; // something here isn't working Jacob make it work
-        Alert.alert(
-            'What would you like to do?',
-            '',
-            [
-              {text: 'Cancel',
-               onPress: () => console.log('Ask me later pressed'),
-               style: 'cancel'
-              },
-              {
-                text: 'Delete tracker',
-                onPress: () => this.deleteConfirm(item),
-               
-              },
-              {text: 'See Tracker Details',
-              onPress: () => navigate("Metrics", {screen: "Metrics", tracker: item})},
-             
-            ],
-            {cancelable: false},
-          );
-    }
+   
 
     deleteConfirm = (key) => {
         Alert.alert(
@@ -218,61 +158,38 @@ class Read extends React.Component {
         this._updateState();
         
     }
-    // This checks whether or not the name of the added tracker is in the array 
-    isMade = (val) =>{
-        console.log(val);
-        return this.state.trackers.some(item => val === item.key);
-    }
-    
-  componentDidMount = async() => { //scan tracker
-    this._loadClient();
-    AppState.addEventListener('change', this._handleAppStateChange);    // testing app state
-    try {
-        await NfcManager.registerTagEvent()
-    } catch (ex) {
-        console.warn('ex', ex);
-        NfcManager.unregisterTagEvent().catch(() => 0);
-    }
-    NfcManager.start();
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, tags => {
-        console.log('tag', tags);
-        this._onTagDiscovered(tags); //writes into 'parsedText
-        NfcManager.setAlertMessageIOS('I got your tag!');//probably useless
-        
-        // This checks to see if new tracker is in array yet, if not then it makes it
-        
-        this.state.trackers.map((this_tag) => {    // changed from trackers
-            if (this.state.parsedText === this_tag.name) {
-                Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
-                this_tag.count = this_tag.count + 1;
-                console.log("Tracker goal: " + this_tag.goal);
-                this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal, this_tag.logs);
-                //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
-                console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
-            }
-                
-            });
-    
-        //NfcManager.unregisterTagEvent().catch(() => 0);           // commenting out this line makes NFC always listening
-    });
-  }
 
-  // The logss that is passed is the current database array with a diff name, which adds the date log, and then the database array is set to the logss in the updateOne function
-  _onPressComplete(newCount, name, goal, logss){
+    trackerOptions = (item) => {
+        const { navigate } = this.props.navigation; // something here isn't working Jacob make it work
+        Alert.alert(
+            'What would you like to do?',
+            '',
+            [
+              {text: 'Cancel',
+               onPress: () => console.log('Ask me later pressed'),
+               style: 'cancel'
+              },
+              {
+                text: 'Delete tracker',
+                onPress: () => this.deleteConfirm(item),
+               
+              },
+              {text: 'See Tracker Details',
+              onPress: () => navigate("Metrics", {screen: "Metrics", tracker: item})},
+             
+            ],
+            {cancelable: false},
+          );
+    }
+    
+
+  _onPressComplete(newCount, name, goal){
     console.log("Current count: " + newCount);
-    console.log("Goal: " + goal);    
-    let dateLog = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
+    console.log("Goal: " + goal);
     // Checks if user has reached their goal
-    const logHopefully = [...logss, dateLog];
-    //logss = [...logss, dateLog];
-    //this.setState({logsTest: [...logss, dateLog]});
-    let didComplete = false;
-    if(goal <= newCount && !this.state.completed){
-        let dateComplete = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
-        this.setState({completed: true, dateCompleted: dateComplete});
-        didComplete = true;
+    if(goal <= newCount){
+        this.setState({completed: true});
         console.log("goal reached");
-        console.log("Completed on: " + dateComplete);
     }
     Vibration.vibrate(300);
     const stitchAppClient = Stitch.defaultAppClient;
@@ -287,7 +204,7 @@ class Read extends React.Component {
     trackers 
       .updateOne(
           { name: name },
-          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: didComplete, dateCompleted: this.state.dateCompleted, logs: logHopefully}},
+          { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: this.state.completed }},
           { upsert: true },
           {owner_id: global.username}
       )
@@ -297,7 +214,8 @@ class Read extends React.Component {
                 { 
                     status: "new",
                     owner_id: global.username,
-                    show: true,
+                    completed: true,
+                    
                 }, 
               { sort: { date: -1} }
             )
@@ -316,58 +234,9 @@ class Read extends React.Component {
           });
       })
       .catch(err => {
-          console.warn(err);   
+          console.warn(err);
       })
     }
-
-    _remove(name, goal){
-        console.log("removing tracker");
-        this.setState({show: false});
-        Vibration.vibrate(300);
-        const stitchAppClient = Stitch.defaultAppClient;
-        const mongoClient = stitchAppClient.getServiceClient(
-          RemoteMongoClient.factory,
-          "mongodb-atlas"
-        );
-        const db = mongoClient.db("LifeLog_DB");
-        const trackers = db.collection("item");
-        //const goal = trackers.goal;
-        trackers 
-          .updateOne(
-              { name: name },
-              { $set: { show: this.state.show }},
-              { upsert: true },
-              {owner_id: global.username}
-          )
-          .then(() => {
-          trackers
-                .find(
-                    { 
-                        status: "new",
-                        show: true,
-                        owner_id: global.username,
-                    }, 
-                  { sort: { date: -1} }
-                )
-              .asArray()
-              .then(docs => {
-                  this.setState({ trackers: docs});  // changed from tracker
-                  this.setState({ array: trackers});    // array test
-                  this._updateState();
-                  //this.setState({ count: newCount});
-                  if (this._confettiView){
-                      this._confettiView.startConfetti();
-                  }
-              })
-              .catch(err => {
-                  console.warn(err);
-              });
-          })
-          .catch(err => {
-              console.warn(err);
-          })
-        }
-
 
     _onPressDelete(itemID){
         const stitchAppClient = Stitch.defaultAppClient;
@@ -383,7 +252,7 @@ class Read extends React.Component {
           )
           .then(() => {
           trackers
-              .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
+              .find({ owner_id: global.username }, { sort: { date: -1} })
               .asArray()
               .then(docs => {
                   this.setState({ trackers: docs});  // changed from trackers
@@ -413,35 +282,14 @@ class Read extends React.Component {
     const db = mongoClient.db("LifeLog_DB");
     const trackers = db.collection("item");
     trackers 
-        .find({ owner_id: global.username }, { sort: { date: -1} })
-        .asArray()
-        .then(docs => {
-            let currdate = new Date();
-            docs.map((tag) => {//we will check for each tag if it is a newer day than the previous check
-                let thisdate = new Date(tag.date);
-                if(//we are more at least on the next day
-                    thisdate.getDate() < currdate.getDate()
-                    || thisdate.getMonth() < currdate.getMonth()
-                    || thisdate.getFullYear() < currdate.getFullYear()
-                ){
-                    tag.date = new Date();//locally
-                    tag.count = 0;
-                    trackers.updateOne({//query
-                        owner_id: global.username,
-                        key: tag.key
-                    },
-                    {//set
-                        $set: {count: 0, date: Date.now()}
-                    }
-                    )
-                }
-            });
-            this.setState({ trackers: docs }); // changed from trackers
-            this.setState({ refreshing: false});
-            this.setState({ array: trackers});    // array test
-            this._updateState(); // added for bug fixing
-        })
-
+      .find({ owner_id: global.username, completed: true }, { sort: { date: -1} })
+      .asArray()
+      .then(docs => {
+          this.setState({ trackers: docs }); // changed from trackers
+          this.setState({ refreshing: false});
+          this.setState({ array: trackers});    // array test
+          this._updateState(); // added for bug fixing
+      })
       .catch(err => {
           console.warn(err);
       });
@@ -449,8 +297,8 @@ class Read extends React.Component {
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
-    //NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-    //NfcManager.unregisterTagEvent().catch(() => 0);
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+    NfcManager.unregisterTagEvent().catch(() => 0);
   }
 
   // Placeholder for when there are no trackers 
@@ -495,13 +343,11 @@ class Read extends React.Component {
     let deviceWidth = Dimensions.get('window').width;
 
     // Checks if goal has been reached, greys out the tracker if it has
-    let itemOpacity = 0.7;
+    let itemOpacity = 1.0;
     let isCompleted = item.color;
-    let iconSize = 1;
     if(item.completed){
         isCompleted = '#d1ecdc';
-        itemOpacity = 0.5;
-        iconSize = 25;
+        itemOpacity = 0.2;
     }
 
     
@@ -510,34 +356,36 @@ class Read extends React.Component {
     
     <View style={{ width: '100%', paddingLeft: 5}} >
         <View style={{flexDirection: 'row', paddingTop: 7, paddingBottom: 7, backgroundColor: 'white', borderColor: item.color}}>
+
             {/*
             <View style={{backgroundColor: item.color, width: 15, height: 70}} elevation={5}>
                 
             </View>
             */}
             
-            
-            <View style={{ width: '95%', borderColor: item.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'column', maxWidth: '95%'}} elevation={5}>
+            <View style={{ width: '95%', borderColor: item.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'column'}} elevation={5}>
+                
                 <TouchableOpacity 
-                style={{ justifyContent: 'center', height: 70, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20}}
+                style={{ justifyContent: 'center', height: 90, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20}}
                 onPress={() => this.trackerOptions(item._id)}
                 >
                 
-                <View style={{flexDirection: 'row', width: item.progress + 0.001 + '%', backgroundColor: item.color, height: 70, borderRadius: 20, maxWidth: '100%', opacity: itemOpacity}}>
-                    <Text style={{flexDirection: 'row', fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'center', marginLeft: 10, position: 'absolute', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
+                <View style={{flexDirection: 'column', width: item.progress + 0.001 + '%', padding: 20,backgroundColor: item.color, height: 90, borderRadius: 20, maxWidth: '100%', opacity: .7}}>
+                    <Text style={{ flexDirection: 'row', fontFamily: 'monospace', fontWeight: 'bold', fontSize: 20, alignSelf: 'flex-start', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
                         {item.name}
-                        <Icon
-                            name="md-checkmark-circle"
-                            color='green'
-                            size={iconSize}
-                        />
                     </Text>
-                    
+                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', paddingTop: 5,fontSize: 10, alignSelf: 'flex-start', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
+                        Date completed: {item.dateCompleted}
+                    </Text>
+                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', paddingTop: 6,fontSize: 10, alignSelf: 'flex-start', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
+                        Logs: {item.count}
 
+                    </Text>
                 </View>
+                
 
-                <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a', opacity: itemOpacity}}>
-                        {item.count}
+                <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'flex-end', position: 'absolute', justifyContent: 'flex-end', color: '#5c5a5a', opacity: 1}}>
+                        
                 </Text>
                 {/*
                 <View style={{ alignSelf: 'flex-start',backgroundColor: 'white', borderWidth: 1, borderRadius: 100, height: 15, width: '100%', justifyContent: 'center', borderColor: item.color}}>
@@ -585,7 +433,6 @@ class Read extends React.Component {
                 }
               ];
         */
-       
         return (
 
             
@@ -594,23 +441,18 @@ class Read extends React.Component {
                 
              
                 <Modal visible={this.state.modalVisible} animationType='slide'>
-                    <SafeAreaView style ={styles.modalContent}>
-                    <ScrollView>
+                    <View style ={styles.modalContent}>
+                    
                         
-                    <View style={{padding: 40}}>
-                    <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 25, color: '#5c5a5a'}}>
-                        Create a New LifeTracker
-                        </Text>
-                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 20,  color: '#5c5a5a'}}>
-                            Name of Tracker
-                            </Text>
-                        <TextInput style={{height: 50, borderColor: '#5c5a5a', borderWidth: 4, fontSize: 25}} 
+                    <View style={{padding: 50}}>
+                        <Text style={{alignSelf: 'center', fontSize: 25, fontWeight: 'bold'}}>Create a new LifeTracker</Text>
+                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Name of Tracker</Text>
+                        <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({name: text}) }
                         />
-                          <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 20, color: '#5c5a5a'}}>
-                              Description
-                              </Text>
-                         <TextInput style={{height: 80, borderColor: '#5c5a5a', borderWidth: 4, fontSize: 25}} 
+                          
+                        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>Description</Text>
+                         <TextInput style={{height: 50, borderColor: '#194051', borderWidth: 4, fontSize: 25}} 
                             onChangeText={(text) => this.setState({description: text}) }
                         />
                           <View style={{flexDirection: 'row', padding: 15}}>
@@ -640,24 +482,26 @@ class Read extends React.Component {
                             </Picker>
                             
                         </View>
-                        <View style={{padding: 15, width: '80%'}}>
+                        <View style={{flexDirection: 'row', padding: 15}}>
+                            <Text style={{fontWeight: 'bold', fontSize: 25}}>Color: </Text>
+                            <Picker 
+                                selectedValue={this.state.color}
+                                style={{height: 50, width: 138}}
+                                onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}
+                                >
+                                <Picker.Item label="Turquiose" value="#05878a" color="#05878a" />
+                                <Picker.Item label="Pink" value="#f5b7b1" color="#f5b7b1" />
+                                <Picker.Item label="Purple" value="#d7bde2" color="#d7bde2"/>
+                                <Picker.Item label="Blue" value="#a9cce3" color="#a9cce3"/>
+                                <Picker.Item label="Green" value="#a3e4d7" color="#a3e4d7"/>
+                                <Picker.Item label="Yellow" value="#f9e79f" color="#f9e79f"/>
+                                <Picker.Item label="Orange" value="#edbb99" color="#edbb99"/>
+                                <Picker.Item label="Grey" value="#aeb6bf" color="#aeb6bf"/>
 
-                            <View style={{flexDirection: 'row'}}>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#05878a"}} onPress={() => this.setState({color: "#05878a"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#f5b7b1"}} onPress={() => this.setState({color: "#f5b7b1"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#d7bde2"}} onPress={() => this.setState({color: "#d7bde2"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#a9cce3"}} onPress={() => this.setState({color: "#a9cce3"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#a3e4d7"}} onPress={() => this.setState({color: "#a3e4d7"})}/>
-                                
-                            </View>
-                            <View style={{flexDirection: 'row'}}>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#f9e79f"}} onPress={() => this.setState({color: "#f9e79f"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#edbb99"}} onPress={() => this.setState({color: "#edbb99"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#aeb6bf"}} onPress={() => this.setState({color: "#aeb6bf"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#ec7063"}} onPress={() => this.setState({color: "#ec7063"})}/>
-                                <TouchableOpacity style={{padding: 10, margin: 10, height: 30, width: 30, borderRadius: 100, backgroundColor: "#27ae60"}} onPress={() => this.setState({color: "#27ae60"})}/>
-                                
-                            </View>
+                            </Picker>
+                            <TouchableOpacity style={{padding: 10, width: '40%', backgroundColor: this.state.color}}>
+
+                            </TouchableOpacity>
                         </View>
                       
 
@@ -680,8 +524,13 @@ class Read extends React.Component {
 
                     </View>
                         
-                    </ScrollView>
-                    </SafeAreaView>
+                    <TouchableOpacity 
+                    style={{padding: 10, width: '100%' , marginTop: '48%', margin: 20,  borderWidth: 2, borderColor: '#05878a', backgroundColor: '#074e67',  alignSelf: 'center'}}
+                    onPress={() => this.setModalVisible(false)}
+                    >
+                        <Text style={{fontSize: 30, color: 'white', margin: 5, padding: 5, alignSelf: 'center', fontWeight: 'bold'}}>CANCEL</Text>
+                    </TouchableOpacity>
+                    </View>
 
                 </Modal>
                     {/*
@@ -694,7 +543,6 @@ class Read extends React.Component {
                     extraData={this.state}
                     refreshControl ={ <RefreshControl refreshing ={this.state.refreshing} onRefresh={this._onRefresh} />}
                     renderItem={this.renderItem}
-                    ListEmptyComponent={this.ListEmpty}
                             /*
                             renderItem={({ item }) => (
                                 //<View style={styles.tracker}>
@@ -752,6 +600,7 @@ class Read extends React.Component {
   }
 
     _onTagDiscovered = tag => {
+        Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
         console.log('Tag Discovered', tag);
         this.setState({ tag });
         let text = this._parseText(tag);
@@ -789,7 +638,7 @@ class Read extends React.Component {
         const db = mongoClient.db("LifeLog_DB");
         const trackers = db.collection("item");
         trackers 
-          .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
+          .find({ owner_id: global.username, completed: true }, { sort: { date: -1} })
           .asArray()
           .then(docs => {
               this.setState({ trackers: docs }); // changed from trackers
@@ -825,8 +674,6 @@ class Read extends React.Component {
             this.setModalVisible(false);        // This makes it so the modal closes automatically once it writes and adds the tracker 
             await NfcManager.setAlertMessageIOS('I got your tag!');
             this._cleanUp();
-            this._onRefresh();   
-
         } catch (ex) {
           this._cleanUp();
         }
