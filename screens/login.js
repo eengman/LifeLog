@@ -104,6 +104,10 @@ export default class Login extends React.Component {
                     }
                 })
             }
+        console.log("Registration was successful"); 
+        this.setState({
+        register_modal_visible: false,
+        });
         }
     };
 
