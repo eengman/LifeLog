@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler, Vibration } from 'react-native';
 import { Stitch, RemoteMongoClient } from "mongodb-stitch-react-native-sdk";
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-simple-toast';
 //import Confetti from "react-native-confetti";
 
 var height = Dimensions.get("window").height;
@@ -108,6 +109,7 @@ export default class Login extends React.Component {
         this.setState({
         register_modal_visible: false,
         });
+        Toast.show("Your registration was successful");
         }
     };
 
