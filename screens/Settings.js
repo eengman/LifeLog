@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, Image, Platform, StyleSheet, ScrollView, TouchableOpacity, Keyboard, TextInput, Dimensions, KeyboardAvoidingView, Button, Modal, BackHandler, Picker } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {masterUpdate} from './../App';
+import Toast from 'react-native-simple-toast';
 
 //import Confetti from "react-native-confetti";
 
@@ -52,6 +53,7 @@ export default class Login extends React.Component {
 
             
             console.log("logout complete...");
+            Toast.show("Logged out successfully");
         } catch (e) {
             // saving error
         }
