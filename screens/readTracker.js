@@ -64,6 +64,7 @@ class Read extends React.Component {
             show: true,
             askAgain: true,
             logsTest: [],
+            id: undefined,
         }
         this._loadClient = this._loadClient.bind(this);
     }
@@ -208,8 +209,8 @@ class Read extends React.Component {
         this.setState({ miraculous_something: false });
         global.recently = "readTracker.js";
         this.setState({ miraculous_something: true });
-        //this.render; //why does this stuff only work sometimes wtf
-        //return;
+        this.render; //why does this stuff only work sometimes wtf
+        return;
     }
 
     tagInc = (props) => {
@@ -814,7 +815,7 @@ class Read extends React.Component {
         const db = mongoClient.db("LifeLog_DB");
         const trackers = db.collection("item");
         trackers 
-          .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
+          .find({ owner_id: global.username,  show: true }, { sort: { date: -1} })
           .asArray()
           .then(docs => {
               this.setState({ trackers: docs }); // changed from trackers

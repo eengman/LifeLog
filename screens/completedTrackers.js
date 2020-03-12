@@ -146,10 +146,10 @@ class Read extends React.Component {
     _updateState() {
         console.log("updating state");
         this.setState({ miraculous_something: false });
-        global.recently = "readTracker.js";
+        //global.recently = "readTracker.js";
         this.setState({ miraculous_something: true });
-        this.render; //why does this stuff only work sometimes wtf
-        return;
+        //this.render; //why does this stuff only work sometimes wtf
+        //return;
     }
 
     tagInc = (props) => {
@@ -298,7 +298,7 @@ class Read extends React.Component {
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
     NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-    NfcManager.unregisterTagEvent().catch(() => 0);
+    //NfcManager.unregisterTagEvent().catch(() => 0);
   }
 
   // Placeholder for when there are no trackers 

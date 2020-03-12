@@ -23,10 +23,7 @@ export default function Header({ navigation, title }) {
             </TouchableOpacity> 
 
             <View style={{paddingLeft: 25}}>
-                <Icon
-                name= {screenIcon}
-                size={35}
-                        />
+                
             </View>
 
             <View>
