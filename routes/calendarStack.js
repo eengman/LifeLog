@@ -22,7 +22,7 @@ PastDay: {
     screen: PastDay,
     navigationOptions: ({ navigation }) => {
         return {
-            headerTitle: () => <Header navigation={navigation} title='Date Here' />,
+            headerTitle: () => <Header navigation={navigation} title='Past Day' />,
         }
     } 
 },

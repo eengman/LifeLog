@@ -23,7 +23,8 @@ export default class OurCalendar extends React.Component {
     return (
       <Calendar
       //onChange={(range) => console.log(Object.values(range))}
-      onChange={(range) => navigate("PastDay", {screen: "PastDay", Cdate: Object.values(range)})}
+      //onChange={(range) => navigate("PastDay", {screen: "PastDay", Cdate: Object.values(range)})}
+      onChange={(range) => navigate("PastDay", {screen: "PastDay", Cdate: "Here is past records for day: "})}
       minDate="2018-04-20"
       startDate="2020-01-01"
       endDate="2022-01-01"

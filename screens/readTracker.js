@@ -657,10 +657,11 @@ class Read extends React.Component {
                             onChangeText={(text) => this.setState({description: text}) }
                         />
                           <View style={{flexDirection: 'row', padding: 15}}>
-                            <Text style={{fontWeight: 'bold', fontSize: 25}}>Daily Goal: </Text>
+                            <Text style={{fontFamily: 'monospace', fontWeight: 'bold', padding: 10, fontSize: 20, color: '#5c5a5a'}}>Daily Goal: </Text>
                             <Picker 
                                 selectedValue={this.state.goal}
-                                style={{height: 50, width: 138}}
+                                style={{fontFamily: 'monospace', fontWeight: 'bold',height: 50, width: 138}}
+                                itemStyle = {{fontFamily: 'monospace', fontWeight: 'bold',height: 50, width: 138}}
                                 onValueChange={(itemValue, itemIndex) => this.setState({goal: itemValue})}
                                 >
                                     <Picker.Item label="0" value="0" color="0" />
@@ -705,18 +706,18 @@ class Read extends React.Component {
                       
 
                         <TouchableOpacity 
-                        style={{padding: 10, width: '100%', margin: 0, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
+                        style={{padding: 5, width: '100%', margin: 0, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={this.writeToChip}
                         >
                              
-                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
+                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold',color: '#5c5a5a', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
                         
                         <TouchableOpacity //fake tracker
-                        style={{padding: 10, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
+                        style={{padding: 5, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={() => this.setModalVisible(false)}
                         >
-                        <Text style={{color: 'black', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Cancel</Text>
+                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold',color: '#5c5a5a', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Cancel</Text>
                         </TouchableOpacity>
                         
 
