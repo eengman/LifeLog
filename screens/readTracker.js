@@ -246,7 +246,7 @@ class Read extends React.Component {
                 Toast.show('Succesfully scanned tracker', Toast.LONG); //example toast
                 this_tag.count = this_tag.count + 1;
                 console.log("Tracker goal: " + this_tag.goal);
-                this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal, this_tag.logs);
+                this._onPressComplete(this_tag.count, this.state.parsedText, this_tag.goal, this_tag.logs, this_tag._id);
                 //this._updateState(); // if you remove this line from here is breaks; but doesn't in tagInc???????
                 console.log('Found the tag ', this.state.parsedText, ' at value' , this_tag.count);
             }
@@ -258,7 +258,7 @@ class Read extends React.Component {
   }
 
   // The logss that is passed is the current database array with a diff name, which adds the date log, and then the database array is set to the logss in the updateOne function
-  _onPressComplete(newCount, name, goal, logss){
+  _onPressComplete(newCount, name, goal, logss, itemID){
     console.log("Current count: " + newCount);
     console.log("Goal: " + goal);    
     let dateLog = new Date().getDate() + '/' + new Date().getMonth() + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
@@ -286,7 +286,8 @@ class Read extends React.Component {
     console.log("Goal is: " + goal);
     trackers 
       .updateOne(
-          { name: name },
+          //{ name: name },
+          { _id: itemID},
           { $set: { count: newCount, logDate: new Date(), progress: newCount*100/goal, completed: didComplete, dateCompleted: this.state.dateCompleted, logs: logHopefully}},
           { upsert: true },
           {owner_id: global.username}
@@ -465,7 +466,7 @@ class Read extends React.Component {
           .then(docs => {
               this.setState({ trackers: docs }); // changed from trackers
               this.setState({ refreshing: false});
-              this.setState({ array: trackers});    // array test
+              //this.setState({ array: trackers});    // array test
               this._updateState(); // added for bug fixing
           })
           .catch(err => {
@@ -690,14 +691,14 @@ class Read extends React.Component {
                         onPress={this.writeToChip}
                         >
                              
-                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold',color: '#5c5a5a', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
+                        <Text style={{fontFamily: 'monospace',color: '#5c5a5a', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Add Tracker</Text>
                         </TouchableOpacity>
                         
                         <TouchableOpacity //fake tracker
                         style={{padding: 5, width: '100%', margin: 25, borderWidth: 2, borderColor: '#eee9e5', backgroundColor: '#eee9e5', borderRadius: 100, alignSelf: 'center'}}
                         onPress={() => this.setModalVisible(false)}
                         >
-                        <Text style={{fontFamily: 'monospace', fontWeight: 'bold',color: '#5c5a5a', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Cancel</Text>
+                        <Text style={{fontFamily: 'monospace', color: '#5c5a5a', fontSize: 35, alignSelf: 'center', fontWeight: 'bold'}}>Cancel</Text>
                         </TouchableOpacity>
                         
 
@@ -840,6 +841,7 @@ class Read extends React.Component {
             let bytes = buildUrlPayload(this.state.name); //where tag goes in
             await NfcManager.writeNdefMessage(bytes);
             Alert.alert("Successfully scanned " + '"' + this.state.name + '"');
+            //Toast.show('Succesfully scanned ' + this.state.name, Toast.LONG); //example toast
             console.log("hello from writetochip");
             //this.addTracker(this.state.name);
             const obj = { tagg: new tag(this.state.name, 0), key: this.state.name, };
