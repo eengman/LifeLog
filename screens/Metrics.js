@@ -14,7 +14,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Stitch, AnonymousCredential, RemoteMongoClient} from "mongodb-stitch-react-native-sdk";
-import ProgressCircle from 'react-native-progress-circle'
+import ProgressCircle from 'react-native-progress-circle';
+import Toast from 'react-native-simple-toast';
 
 
 export default class App extends React.Component {
@@ -31,9 +32,131 @@ export default class App extends React.Component {
       logs: [],
       percentage: 0,
       description: '',
+      id: '',
+      refresh: false,
       
   
     }}
+
+    reset(name) {
+      // Checks if user has reached their goal
+      //Vibration.vibrate(300);
+      const stitchAppClient = Stitch.defaultAppClient;
+      const mongoClient = stitchAppClient.getServiceClient(
+        RemoteMongoClient.factory,
+        "mongodb-atlas"
+      );
+      const db = mongoClient.db("LifeLog_DB");
+      const trackers = db.collection("item");
+      trackers 
+        .updateOne(
+            {name: name},
+            {$set:  {count: 0, logDate: new Date(), progress: 0, logs: [] }},
+            { upsert: true },
+            {owner_id: global.username}
+        )
+        .then(() => {
+        trackers
+              .find(
+                  { 
+                      status: "new",
+                      owner_id: global.username,
+                      show: true,
+                  }, 
+                { sort: { date: -1} }
+              )
+            .asArray()
+            .then(docs => {
+                //this.setState({ trackers: docs});  // changed from tracker
+                //this.setState({ array: trackers});    // array test
+                //this._updateState();
+                //this.setState({ count: newCount});
+                //if (this._confettiView){
+                //    this._confettiView.startConfetti();
+                //}
+                this.setState({ refresh: !this.state.refresh});
+            })
+            .catch(err => {
+                console.warn(err);
+            });
+        })
+        .catch(err => {
+            console.warn(err);   
+        })
+        this.props.navigation.navigate("Read", {screen: "Read"});
+        Toast.show('Pull down to refresh', Toast.LONG); //example toast
+      
+  }
+
+  _onPressDelete(itemID){
+    const stitchAppClient = Stitch.defaultAppClient;
+    const mongoClient = stitchAppClient.getServiceClient(
+      RemoteMongoClient.factory,
+      "mongodb-atlas"
+    );
+    const db = mongoClient.db("LifeLog_DB");
+    const trackers = db.collection("item");
+    trackers 
+      .deleteOne(
+          { _id: itemID },
+      )
+      .then(() => {
+      trackers
+          .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
+          .asArray()
+          .then(docs => {
+              //this.setState({ trackers: docs});  // changed from trackers
+              //this.setState({ array: trackers});    // array test
+              //this._updateState();
+              if (this._confettiView){
+                  this._confettiView.startConfetti();
+              }
+          })
+          .catch(err => {
+              console.warn(err);
+          });
+      })
+      .catch(err => {
+          console.warn(err);
+      })
+      this.props.navigation.navigate("Read", {screen: "Read"});
+      Toast.show('Pull down to refresh', Toast.LONG); //example toast
+}
+
+deleteConfirm = (key) => {
+  Alert.alert(
+      'Are you sure you want to delete the tracker?',
+      '',
+      [
+        {text: 'Cancel',
+         onPress: () => console.log('Ask me later pressed'),
+         style: 'cancel'
+        },
+        {
+          text: 'Yes I am sure',
+          onPress: () => this._onPressDelete(key),
+        },
+      ],
+      {cancelable: false},
+    );
+}
+resetConfirm = (name) => {
+  Alert.alert(
+      'Are you sure you to reset the tracker?',
+      '',
+      [
+        {text: 'Cancel',
+         onPress: () => console.log('Ask me later pressed'),
+         style: 'cancel'
+        },
+        {
+          text: 'Yes I am sure',
+          onPress: () => this.reset(name),
+        },
+      ],
+      {cancelable: false},
+    );
+}
 
     componentDidMount(){
       this.getTracker()
@@ -61,6 +184,7 @@ export default class App extends React.Component {
     this.setState({logs: item.logs})
     this.setState({percentage: Math.floor((item.count/item.goal)*100)})
     this.setState({description: item.description})
+    this.setState({id: item._id})
     })
     .catch(err => {
     console.error(err)
@@ -110,6 +234,28 @@ export default class App extends React.Component {
         
         </View>
         
+    </View>
+
+    <View style={{flexDirection: 'row', marginBottom: 5, marginTop: 0, justifyContent: 'center'}}>
+      
+      <View style={{ width: '40%', marginRight: 10, height: 40, borderRadius: 20, borderWidth: 1, borderColor: "#a9cce3", backgroundColor: 'white'}} elevation={10}>
+      <TouchableOpacity 
+      style={{ height: 40, backgroundColor: "#a9cce3", width: '100%', borderRadius: 20, borderColor: "#a9cce3", justifyContent: 'center', opacity: 0.7, borderWidth: 1}}
+      onPress={() => this.resetConfirm(this.state.name)}
+      >
+        <Text style={{fontFamily: 'monospace', fontSize: 20, padding: 5, color: '#5c5a5a', fontWeight: 'bold', alignSelf: 'center'}}>Reset</Text>
+      </TouchableOpacity>
+      </View>
+
+      <View style={{ width: '40%', marginLeft: 10, height: 40, borderRadius: 20, borderWidth: 1, borderColor: '#ec7063', backgroundColor: 'white'}} elevation={10}>
+      <TouchableOpacity 
+      style={{ height: 40, backgroundColor: '#ec7063', width: '100%', borderRadius: 20, borderColor: '#ec7063', justifyContent: 'center', opacity: 0.8, borderWidth: 1}}
+      onPress={() => this.deleteConfirm(this.state.id)}
+      >
+        <Text style={{fontFamily: 'monospace', fontSize: 20, padding: 5, color: '#5c5a5a', fontWeight: 'bold', alignSelf: 'center'}}>Delete</Text>
+      </TouchableOpacity>
+      </View>
+
     </View>
     
     <Text style={{fontFamily: 'monospace', fontSize: 15, margin: 15, marginBottom: 0, color: '#5c5a5a', fontWeight: 'bold', opacity: 0.7}} >Description: </Text>

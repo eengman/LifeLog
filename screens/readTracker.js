@@ -208,8 +208,8 @@ class Read extends React.Component {
         this.setState({ miraculous_something: false });
         global.recently = "readTracker.js";
         this.setState({ miraculous_something: true });
-        this.render; //why does this stuff only work sometimes wtf
-        return;
+        //this.render; //why does this stuff only work sometimes wtf
+        //return;
     }
 
     tagInc = (props) => {
@@ -435,9 +435,9 @@ class Read extends React.Component {
                       this.setState({ array: trackers});    // array test
                       this._updateState();
                       //this.setState({ count: newCount});
-                      if (this._confettiView){
-                          this._confettiView.startConfetti();
-                      }
+                      //if (this._confettiView){
+                      //    this._confettiView.startConfetti();
+                      //}
                   })
                   .catch(err => {
                       console.warn(err);
@@ -450,45 +450,28 @@ class Read extends React.Component {
     }
 
      // Refresh shit  
-  _onRefresh = () => {
-    this.setState({ refreshing: true });
-    const stitchAppClient = Stitch.defaultAppClient;
-    const mongoClient = stitchAppClient.getServiceClient(
-        RemoteMongoClient.factory,
-        "mongodb-atlas"
-    );
-    
-    const db = mongoClient.db("LifeLog_DB");
-    const trackers = db.collection("item");
-    trackers 
-        .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
-        .asArray()
-        .then(docs => {
-            this.setState({ trackers: docs }); // changed from trackers
-            this.setState({ refreshing: false});
-            this.setState({ array: trackers});    // array test
-            this._updateState(); // added for bug fixing
-        })
-
-      .catch(err => {
-          console.warn(err);
-      });
-      let currdate = new Date();
-            this.state.trackers.map((tag) => {//we will check for each tag if it is a newer day than the previous check
-                let thisdate = tag.logDate;
-                if(//we are more at least on the next day
-                    thisdate.getDate() < currdate.getDate()
-                    || thisdate.getMonth() < currdate.getMonth()
-                    || thisdate.getFullYear() < currdate.getFullYear()
-                    //true    // this is set to true so i can test it right now
-                ){
-                    this.reset(tag.name);
-                }
-                console.log("current date: " + currdate);
-                console.log("this date: " + thisdate);
-            });
-      
-    };
+     _onRefresh = () => {
+        this.setState({ refreshing: true });
+        const stitchAppClient = Stitch.defaultAppClient;
+        const mongoClient = stitchAppClient.getServiceClient(
+            RemoteMongoClient.factory,
+            "mongodb-atlas"
+        );
+        const db = mongoClient.db("LifeLog_DB");
+        const trackers = db.collection("item");
+        trackers 
+          .find({ owner_id: global.username, show: true }, { sort: { date: -1} })
+          .asArray()
+          .then(docs => {
+              this.setState({ trackers: docs }); // changed from trackers
+              this.setState({ refreshing: false});
+              this.setState({ array: trackers});    // array test
+              this._updateState(); // added for bug fixing
+          })
+          .catch(err => {
+              console.warn(err);
+          });
+        };
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this._handleAppStateChange); // testing app state  
@@ -546,7 +529,7 @@ class Read extends React.Component {
         itemOpacity = 0.5;
         iconSize = 25;
     }
-
+    const { navigate } = this.props.navigation; // something here isn't working Jacob make it work
     
     
     return(
@@ -560,20 +543,17 @@ class Read extends React.Component {
             */}
             
             
+            
             <View style={{ width: '95%', borderColor: item.color, backgroundColor: 'white', borderRadius: 20, flexDirection: 'column', maxWidth: '95%'}} elevation={5}>
                 <TouchableOpacity 
                 style={{ justifyContent: 'center', height: 70, backgroundColor: '#f2f3f4', width: '100%', borderRadius: 20}}
-                onPress={() => this.trackerOptions(item._id)}
+                onPress={() => navigate("Metrics", {screen: "Metrics", tracker: item._id })}
                 >
                 
                 <View style={{flexDirection: 'row', width: item.progress + 0.001 + '%', backgroundColor: item.color, height: 70, borderRadius: 20, maxWidth: '100%', opacity: itemOpacity}}>
                     <Text style={{flexDirection: 'row', fontFamily: 'monospace', fontWeight: 'bold', padding: 20, fontSize: 25, alignSelf: 'center', marginLeft: 10, position: 'absolute', letterSpacing: 2, maxWidth: '100%', color: '#5c5a5a' }}>
                         {item.name}
-                        <Icon
-                            name="md-checkmark-circle"
-                            color='green'
-                            size={iconSize}
-                        />
+                        
                     </Text>
                     
 
