@@ -301,7 +301,7 @@ export default class Login extends React.Component {
                 <Modal visible={this.state.register_modal_visible} animationType='slide'>
                     <View style={this.currentRegStyle()}>
                     
-                        <KeyboardAvoidingView behavior="padding" enabled>
+                        <KeyboardAvoidingView behavior="padding" disabled>
                             <TextInput
                                 style={{
                                     color: "black",
