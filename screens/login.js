@@ -304,7 +304,7 @@ export default class Login extends React.Component {
                         <KeyboardAvoidingView behavior="padding" enabled>
                             <TextInput
                                 style={{
-                                    color: "lightgray",
+                                    color: "black",
                                     fontSize: 20,
                                     marginTop: height / 2 - 140
                                 }}
@@ -315,7 +315,7 @@ export default class Login extends React.Component {
                             />
                             <TextInput
                                 style={{
-                                    color: "lightgray",
+                                    color: "black", 
                                     fontSize: 20,
                                     paddingTop: 0,
                                     paddingBottom: 40,

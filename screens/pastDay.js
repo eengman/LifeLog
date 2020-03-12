@@ -64,7 +64,7 @@ class Read extends React.Component {
             show: true,
             askAgain: true,
             logsTest: [],
-            Cdate: '',
+            Cdate: [],
         }
         this._loadClient = this._loadClient.bind(this);
     }

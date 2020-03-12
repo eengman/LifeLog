@@ -16,14 +16,14 @@ import { calendarFormat } from 'moment';
 import { Calendar } from 'react-native-calendario';
 
 export default class OurCalendar extends React.Component {
-
+  
   render() {
     const { navigate } = this.props.navigation;
     const Cdate = "any day"
     return (
       <Calendar
-      
-      onChange={(range) => navigate("PastDay", {screen: "PastDay", Cdate: "range"})}
+      //onChange={(range) => console.log(Object.values(range))}
+      onChange={(range) => navigate("PastDay", {screen: "PastDay", Cdate: Object.values(range)})}
       minDate="2018-04-20"
       startDate="2020-01-01"
       endDate="2022-01-01"
