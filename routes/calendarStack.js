@@ -2,6 +2,7 @@
 /* eslint-disable prettier/prettier */
 import { createStackNavigator } from 'react-navigation-stack';
 import calendar from '../screens/calendar';
+import PastDay from '../screens/pastDay';
 import Header from '../shared/header';
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
@@ -16,7 +17,17 @@ const screens = {
             }
         } 
     },
+
+PastDay: {
+    screen: PastDay,
+    navigationOptions: ({ navigation }) => {
+        return {
+            headerTitle: () => <Header navigation={navigation} title='Past Day' />,
+        }
+    } 
+},
 }
+
 
 
 

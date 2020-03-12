@@ -5,6 +5,7 @@ import ReadStack from './readStack';
 import SettingsStack from './settingsStack';
 import CompletedTrackersStack from './completedTrackersStack';
 import CalendarStack from './calendarStack';
+import PastDayStack from  './pastDayStack';
 
 const RootDrawerNavigator = createDrawerNavigator({
     Trackers: {
