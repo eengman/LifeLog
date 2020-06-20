@@ -7,5 +7,9 @@ LifeLog is a life tracker app for Android that uses NFC technology to keep track
 
 ![GitHub Logo](/LifeLogPictures/Login.png)
 
-![GitHub Logo](/LifeLogPictures/Home Screen.png)
+![GitHub Logo](/LifeLogPictures/HomeScreen.png)
+
+![GitHub Logo](/LifeLogPictures/MetricsScreen.png)
+
+![GitHub Logo](/LifeLogPictures/AddTrackerScreen.png)
 
